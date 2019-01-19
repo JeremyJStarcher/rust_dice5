@@ -5,5 +5,5 @@ fn main() {
 
     let d = dice::Dice { dice };
 
-    println!("{:?}", d);
+    println!("{}", d);
 }

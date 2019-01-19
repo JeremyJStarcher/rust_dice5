@@ -1,11 +1,35 @@
 extern crate rand;
 use rand::Rng;
+use std::fmt;
 
 pub type DieFace = i8;
 
 #[derive(Debug)]
 pub struct Dice {
     pub dice: Vec<DieFace>,
+}
+
+impl fmt::Display for Dice {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let codes: Vec<String> = self
+            .dice
+            .iter()
+            .map(|k| {
+                let m = match k {
+                    1 => "⚀".to_string(),
+                    2 => "⚁".to_string(),
+                    3 => "⚂".to_string(),
+                    4 => "⚃".to_string(),
+                    5 => "⚄".to_string(),
+                    6 => "⚅".to_string(),
+                    _ => "🎲".to_string(),
+                };
+                m
+            })
+            .collect();
+
+        write!(f, "{}", codes.join(" "))
+    }
 }
 
 impl Dice {
