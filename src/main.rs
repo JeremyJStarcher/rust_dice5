@@ -7,5 +7,5 @@ fn main() {
     let scoredata = scorecard::get_new_scorecard_data();
 
     println!("{}", hand);
-    println!("{:?}", scoredata);
+    println!("{:?}", calchand::calc_3k(&hand));
 }

@@ -33,8 +33,8 @@ impl fmt::Display for Dice {
 }
 
 impl Dice {
-    const NUMBER_OF_DICE: usize = 5;
-    const NUMBER_OF_FACES: i8 = 6;
+    pub const NUMBER_OF_DICE: usize = 5;
+    pub const NUMBER_OF_FACES: i8 = 6;
 
     pub fn roll_die() -> DieFace {
         let mut rng = rand::thread_rng();

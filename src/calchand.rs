@@ -1,40 +1,70 @@
 use super::dice;
 
-struct DiceSort {
-
-}
-
-fn sum_faces(dice: &dice::Dice, face: dice::DieFace) -> i16 {
-    let sum = dice.dice.iter().filter(|x| **x == face).sum::<dice::DieFace>();
+fn sum_faces(hand: &dice::Dice, face: dice::DieFace) -> i16 {
+    let sum = hand
+        .dice
+        .iter()
+        .filter(|x| **x == face)
+        .sum::<dice::DieFace>();
     sum as i16
 }
 
-fn sort_faces(dice: &dice::Dice, face: dice::DieFace) -> i16 {
-    let sum = dice.dice.iter().filter(|x| **x == face).sum::<dice::DieFace>();
-    sum as i16
-}
-pub fn calc_ace(dice: &dice::Dice) -> i16 {
-    sum_faces(dice, 1)
+fn sort_faces(hand: &dice::Dice) -> Vec<usize> {
+    let range = 1..dice::Dice::NUMBER_OF_DICE + 2;
+
+    let r: Vec<usize> = range
+        .map(|face| {
+            let face_count: Vec<&i8> = hand
+                .dice
+                .iter()
+                .filter(|f| **f == face as dice::DieFace)
+                .collect();
+            face_count.len()
+        })
+        .collect();
+    r
 }
 
-pub fn calc_two(dice: &dice::Dice) -> i16 {
-    sum_faces(dice, 2)
+pub fn calc_ace(hand: &dice::Dice) -> i16 {
+    sum_faces(hand, 1)
 }
 
-pub fn calc_three(dice: &dice::Dice) -> i16 {
-    sum_faces(dice, 3)
+pub fn calc_two(hand: &dice::Dice) -> i16 {
+    sum_faces(hand, 2)
 }
 
-pub fn calc_four(dice: &dice::Dice) -> i16 {
-    sum_faces(dice, 4)
+pub fn calc_three(hand: &dice::Dice) -> i16 {
+    sum_faces(hand, 3)
 }
 
-pub fn calc_five(dice: &dice::Dice) -> i16 {
-    sum_faces(dice, 5)
+pub fn calc_four(hand: &dice::Dice) -> i16 {
+    sum_faces(hand, 4)
 }
 
-pub fn calc_six(dice: &dice::Dice) -> i16 {
-    sum_faces(dice, 6)
+pub fn calc_five(hand: &dice::Dice) -> i16 {
+    sum_faces(hand, 5)
+}
+
+pub fn calc_six(hand: &dice::Dice) -> i16 {
+    sum_faces(hand, 6)
+}
+
+pub fn calc_3k(hand: &dice::Dice) -> i16 {
+    let faces_count = sort_faces(hand);
+    println!("hand {:?}", hand);
+
+    println!("faces_count {:?}", faces_count);
+    let tmp: Vec<&usize> = faces_count.iter().filter(|f| **f >= 3).collect();
+    println!("tmp {:?}", tmp);
+    let sum: i16 = hand.dice.iter().map(|f| *f as i16).sum();
+    println!("sum {:?}", sum);
+
+    let test = tmp.len() >= 1;
+    println!("test {:?}", test);
+
+    let val = if test { sum } else { 0 };
+    println!("val {:?}", val);
+    val
 }
 
 #[cfg(test)]
@@ -114,6 +144,16 @@ mod tests {
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.three_kind.calc)(&hand);
         assert_eq!(score, (6 * 3) + 1 + 2);
+    }
+
+    #[test]
+    fn test_3k_five_aces() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 1, 1, 1, 1];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.three_kind.calc)(&hand);
+        assert_eq!(score, 5);
     }
 
     #[test]
