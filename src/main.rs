@@ -1,3 +1,9 @@
+mod dice;
+
 fn main() {
-    println!("Hello, world!");
+    let dice = dice::Dice::roll_all();
+
+    let d = dice::Dice { dice };
+
+    println!("{:?}", d);
 }

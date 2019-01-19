@@ -5,3 +5,4 @@ authors = ["Jeremy J Starcher"]
 edition = "2018"
 
 [dependencies]
+rand = "0.6.4"
