@@ -57,8 +57,6 @@ impl Dice {
             panic!("dice.length and re-roll length must match");
         }
 
-        // let mut dice = Vec::with_capacity(Dice::NUMBER_OF_DICE);
-
         let dice: Vec<DieFace> = hand
             .dice
             .iter()
@@ -71,7 +69,6 @@ impl Dice {
 
         return Dice { dice };
     }
-
     pub fn get_empty_hand() -> Vec<DieFace> {
         let mut r = Vec::with_capacity(Dice::NUMBER_OF_DICE);
 
