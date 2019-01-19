@@ -1,11 +1,12 @@
+use super::calchand;
 use super::dice;
 
 #[derive(Debug)]
 pub struct LineData {
-    long_name: String,
-    short_name: String,
-    value: Option<i16>,
-    calc: fn(dice: dice::Dice) -> i16,
+    pub long_name: String,
+    pub short_name: String,
+    pub value: Option<i16>,
+    pub calc: fn(dice: &dice::Dice) -> i16,
 }
 
 #[derive(Debug)]
@@ -25,7 +26,7 @@ pub struct ScoreCardData {
     pub yahtzee: LineData,
 }
 
-fn dummy_calc(_dice: dice::Dice) -> i16 {
+fn dummy_calc(_dice: &dice::Dice) -> i16 {
     -100
 }
 
@@ -37,37 +38,37 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
             long_name: "Aces".to_string(),
             short_name: "1".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_ace,
         },
         two: LineData {
             long_name: "Twos".to_string(),
             short_name: "2".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_two,
         },
         three: LineData {
             long_name: "Threes".to_string(),
             short_name: "3".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_three,
         },
         four: LineData {
             long_name: "Fours".to_string(),
             short_name: "4".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_four,
         },
         five: LineData {
             long_name: "Fives".to_string(),
             short_name: "5".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_five,
         },
         six: LineData {
             long_name: "Sixes".to_string(),
             short_name: "6".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_six,
         },
         three_kind: LineData {
             long_name: "Three of a Kind".to_string(),
@@ -128,15 +129,5 @@ mod tests {
     fn get_new_scorecard_returns_card() {
         let scorecard = get_new_scorecard_data();
         assert_eq!(scorecard.ace.value, None);
-    }
-
-    #[test]
-    fn test_dummy() {
-        let d = dice::Dice::roll_all();
-        let hand = dice::Dice { dice: d };
-
-        let scorecard = get_new_scorecard_data();
-        let score = (scorecard.five.calc)(hand);
-        assert_eq!(score, -100);
     }
 }

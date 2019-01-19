@@ -41,15 +41,20 @@ impl Dice {
         rng.gen_range(0, Dice::NUMBER_OF_FACES) + 1
     }
 
-    pub fn roll_all() -> Vec<DieFace> {
-        let dice = Dice::get_empty_hand();
-
-        let reroll_flags: Vec<bool> = dice.iter().map(|_i| true).collect();
-        println!("reroll_flags {:?}", reroll_flags);
+    #[allow(dead_code)]
+    pub fn roll_fake(dice: Vec<DieFace>) -> Dice {
         let dice = Dice { dice };
+        dice
+    }
 
-        let hew_hand = Dice::reroll_hand(dice, reroll_flags);
-        return hew_hand.dice;
+    pub fn roll_all() -> Dice {
+        let hand = Dice::get_empty_hand();
+
+        let reroll_flags: Vec<bool> = hand.dice.iter().map(|_i| true).collect();
+        println!("reroll_flags {:?}", reroll_flags);
+
+        let new_hand = Dice::reroll_hand(hand, reroll_flags);
+        new_hand
     }
 
     pub fn reroll_hand(hand: Dice, reroll: Vec<bool>) -> Dice {
@@ -69,13 +74,14 @@ impl Dice {
 
         return Dice { dice };
     }
-    pub fn get_empty_hand() -> Vec<DieFace> {
-        let mut r = Vec::with_capacity(Dice::NUMBER_OF_DICE);
+
+    pub fn get_empty_hand() -> Dice {
+        let mut dice = Vec::with_capacity(Dice::NUMBER_OF_DICE);
 
         for _i in 0..Dice::NUMBER_OF_DICE {
-            r.push(0);
+            dice.push(0);
         }
-        return r;
+        Dice { dice }
     }
 }
 
@@ -85,16 +91,16 @@ mod tests {
 
     #[test]
     fn roll_all_correct_number_of_dice() {
-        let k = Dice::roll_all();
+        let hand = Dice::roll_all();
 
-        assert_eq!(k.len(), Dice::NUMBER_OF_DICE);
+        assert_eq!(hand.dice.len(), Dice::NUMBER_OF_DICE);
     }
 
     #[test]
     fn get_empty_hand_correct_number_of_dice() {
-        let k = Dice::get_empty_hand();
+        let hand = Dice::get_empty_hand();
 
-        assert_eq!(k.len(), Dice::NUMBER_OF_DICE);
+        assert_eq!(hand.dice.len(), Dice::NUMBER_OF_DICE);
     }
 
     #[test]
