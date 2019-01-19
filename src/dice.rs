@@ -35,10 +35,15 @@ impl Dice {
 
         // let mut dice = Vec::with_capacity(Dice::NUMBER_OF_DICE);
 
-        let dice : Vec<DieFace> = hand.dice.iter().zip(reroll).map(|(face, flag)| {
-            let f = if flag { Dice::roll_die() } else { *face };
-            f
-         }).collect();
+        let dice: Vec<DieFace> = hand
+            .dice
+            .iter()
+            .zip(reroll)
+            .map(|(face, flag)| {
+                let f = if flag { Dice::roll_die() } else { *face };
+                f
+            })
+            .collect();
 
         return Dice { dice };
     }
