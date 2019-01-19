@@ -1,10 +1,18 @@
 use super::dice;
 
-fn sum_faces(dice: &dice::Dice, face: i8) -> i16 {
-    let sum = dice.dice.iter().filter(|x| **x == face).sum::<i8>();
+struct DiceSort {
+
+}
+
+fn sum_faces(dice: &dice::Dice, face: dice::DieFace) -> i16 {
+    let sum = dice.dice.iter().filter(|x| **x == face).sum::<dice::DieFace>();
     sum as i16
 }
 
+fn sort_faces(dice: &dice::Dice, face: dice::DieFace) -> i16 {
+    let sum = dice.dice.iter().filter(|x| **x == face).sum::<dice::DieFace>();
+    sum as i16
+}
 pub fn calc_ace(dice: &dice::Dice) -> i16 {
     sum_faces(dice, 1)
 }
@@ -41,7 +49,7 @@ mod tests {
 
     #[test]
     fn test_ace_all_aces() {
-        let test_dice: Vec<i8> = vec![1, 1, 1, 1, 1];
+        let test_dice: Vec<dice::DieFace> = vec![1, 1, 1, 1, 1];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
@@ -50,7 +58,7 @@ mod tests {
     }
     #[test]
     fn test_two_all_twos() {
-        let test_dice: Vec<i8> = vec![2, 2, 2, 2, 2];
+        let test_dice: Vec<dice::DieFace> = vec![2, 2, 2, 2, 2];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
@@ -60,7 +68,7 @@ mod tests {
 
     #[test]
     fn test_thre_all_threes() {
-        let test_dice: Vec<i8> = vec![3, 3, 3, 3, 3];
+        let test_dice: Vec<dice::DieFace> = vec![3, 3, 3, 3, 3];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
@@ -70,7 +78,7 @@ mod tests {
 
     #[test]
     fn test_four_all_fours() {
-        let test_dice: Vec<i8> = vec![4, 4, 4, 4, 4];
+        let test_dice: Vec<dice::DieFace> = vec![4, 4, 4, 4, 4];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
@@ -80,7 +88,7 @@ mod tests {
 
     #[test]
     fn test_fives_all_aces() {
-        let test_dice: Vec<i8> = vec![5, 5, 5, 5, 5];
+        let test_dice: Vec<dice::DieFace> = vec![5, 5, 5, 5, 5];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
@@ -90,7 +98,7 @@ mod tests {
 
     #[test]
     fn test_six_all_sixes() {
-        let test_dice: Vec<i8> = vec![6, 6, 6, 6, 6];
+        let test_dice: Vec<dice::DieFace> = vec![6, 6, 6, 6, 6];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
@@ -99,8 +107,18 @@ mod tests {
     }
 
     #[test]
+    fn test_3k_three_sixes() {
+        let test_dice: Vec<dice::DieFace> = vec![6, 6, 6, 1, 2];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.three_kind.calc)(&hand);
+        assert_eq!(score, (6 * 3) + 1 + 2);
+    }
+
+    #[test]
     fn test_aces_all_zeros() {
-        let test_dice: Vec<i8> = vec![0, 0, 0, 0, 0];
+        let test_dice: Vec<dice::DieFace> = vec![0, 0, 0, 0, 0];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
