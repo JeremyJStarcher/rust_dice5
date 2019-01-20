@@ -55,8 +55,8 @@ pub fn calc_six(hand: &dice::Dice) -> i16 {
 
 pub fn calc_3k(hand: &dice::Dice) -> i16 {
     let faces_count = sort_faces(hand);
-    let piles_of_three: Vec<&usize> = faces_count.iter().filter(|f| **f >= 3).collect();
-    if piles_of_three.len() >= 1 {
+    let piles_of_at_least_three: Vec<&usize> = faces_count.iter().filter(|f| **f >= 3).collect();
+    if piles_of_at_least_three.len() >= 1 {
         sum_all_dice(hand)
     } else {
         0
@@ -65,9 +65,33 @@ pub fn calc_3k(hand: &dice::Dice) -> i16 {
 
 pub fn calc_4k(hand: &dice::Dice) -> i16 {
     let faces_count = sort_faces(hand);
-    let piles_of_four: Vec<&usize> = faces_count.iter().filter(|f| **f >= 4).collect();
-    if piles_of_four.len() >= 1 {
+    let piles_of_at_least_four: Vec<&usize> = faces_count.iter().filter(|f| **f >= 4).collect();
+    if piles_of_at_least_four.len() >= 1 {
         sum_all_dice(hand)
+    } else {
+        0
+    }
+}
+
+pub fn calc_ss(hand: &dice::Dice) -> i16 {
+    let faces_count = sort_faces(hand);
+    let piles_of_at_least_one: Vec<&usize> = faces_count.iter().filter(|f| **f >= 1).collect();
+
+    let vec: Vec<String> = piles_of_at_least_one
+        .iter()
+        .map(|&v| {
+            if *v >= 1 {
+                "+".to_string()
+            } else {
+                "-".to_string()
+            }
+        })
+        .collect();
+
+    let str = vec.join("");
+
+    if str.contains("++++") {
+        30
     } else {
         0
     }
@@ -200,6 +224,16 @@ mod tests {
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.four_kind.calc)(&hand);
         assert_eq!(score, 0);
+    }
+
+    #[test]
+    fn test_small_straight_low_straight() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 2, 3, 4, 1];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.small_straight.calc)(&hand);
+        assert_eq!(score, 30);
     }
 
     #[test]

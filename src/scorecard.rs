@@ -86,7 +86,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
             long_name: "Small Straight".to_string(),
             short_name: "ss".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_ss,
         },
         large_straight: LineData {
             long_name: "Large Straight".to_string(),
