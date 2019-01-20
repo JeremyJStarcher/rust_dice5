@@ -109,6 +109,16 @@ pub fn calc_ls(hand: &dice::Dice) -> i16 {
     }
 }
 
+pub fn calc_yahtzee(hand: &dice::Dice) -> i16 {
+    let faces_count = sort_faces(hand);
+    let piles_of_at_least_five: Vec<&usize> = faces_count.iter().filter(|f| **f >= 5).collect();
+    if piles_of_at_least_five.len() >= 1 {
+        50
+    } else {
+        0
+    }
+}
+
 pub fn calc_fh(hand: &dice::Dice) -> i16 {
     let faces_count = sort_faces(hand);
     let piles_of_at_exactly_3: Vec<&usize> = faces_count.iter().filter(|f| **f == 3).collect();
@@ -128,11 +138,6 @@ pub fn calc_chance(hand: &dice::Dice) -> i16 {
 mod tests {
     use super::super::scorecard;
     use super::*;
-
-    #[test]
-    fn is_test() {
-        assert_eq!(true, true);
-    }
 
     #[test]
     fn test_ace_all_aces() {
@@ -402,6 +407,26 @@ mod tests {
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.chance.calc)(&hand);
         assert_eq!(score, 1 + 2 + 3 + 4 + 5);
+    }
+
+    #[test]
+    fn test_yahtzee_has_yahzee() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 1, 1, 1, 1];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.yahtzee.calc)(&hand);
+        assert_eq!(score, 50);
+    }
+
+    #[test]
+    fn test_yahtzee_has_no_yahzee() {
+        let test_dice: Vec<dice::DieFace> = vec![2, 1, 1, 1, 1];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.yahtzee.calc)(&hand);
+        assert_eq!(score, 0);
     }
 
     #[test]

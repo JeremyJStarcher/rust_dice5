@@ -26,13 +26,7 @@ pub struct ScoreCardData {
     pub yahtzee: LineData,
 }
 
-fn dummy_calc(_dice: &dice::Dice) -> i16 {
-    -100
-}
-
 pub fn get_new_scorecard_data() -> ScoreCardData {
-    let k = dummy_calc;
-
     let card = ScoreCardData {
         ace: LineData {
             long_name: "Aces".to_string(),
@@ -110,7 +104,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
             long_name: "Yahtzee".to_string(),
             short_name: "y".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_yahtzee,
         },
     };
     card
@@ -119,11 +113,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn is_test() {
-        assert_eq!(true, true);
-    }
 
     #[test]
     fn get_new_scorecard_returns_card() {
