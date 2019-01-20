@@ -120,6 +120,10 @@ pub fn calc_fh(hand: &dice::Dice) -> i16 {
     }
 }
 
+pub fn calc_chance(hand: &dice::Dice) -> i16 {
+    sum_all_dice(hand)
+}
+
 #[cfg(test)]
 mod tests {
     use super::super::scorecard;
@@ -388,6 +392,16 @@ mod tests {
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.full_house.calc)(&hand);
         assert_eq!(score, 25);
+    }
+
+    #[test]
+    fn test_chance() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 2, 3, 4, 5];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.chance.calc)(&hand);
+        assert_eq!(score, 1 + 2 + 3 + 4 + 5);
     }
 
     #[test]

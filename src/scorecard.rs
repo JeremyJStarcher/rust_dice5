@@ -104,7 +104,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
             long_name: "Chance".to_string(),
             short_name: "c".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_chance,
         },
         yahtzee: LineData {
             long_name: "Yahtzee".to_string(),
