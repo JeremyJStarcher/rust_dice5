@@ -25,6 +25,10 @@ fn sort_faces(hand: &dice::Dice) -> Vec<usize> {
     r
 }
 
+fn sum_all_dice(hand: &dice::Dice) -> i16 {
+    hand.dice.iter().map(|f| *f as i16).sum()
+}
+
 pub fn calc_ace(hand: &dice::Dice) -> i16 {
     sum_faces(hand, 1)
 }
@@ -51,20 +55,12 @@ pub fn calc_six(hand: &dice::Dice) -> i16 {
 
 pub fn calc_3k(hand: &dice::Dice) -> i16 {
     let faces_count = sort_faces(hand);
-    println!("hand {:?}", hand);
-
-    println!("faces_count {:?}", faces_count);
-    let tmp: Vec<&usize> = faces_count.iter().filter(|f| **f >= 3).collect();
-    println!("tmp {:?}", tmp);
-    let sum: i16 = hand.dice.iter().map(|f| *f as i16).sum();
-    println!("sum {:?}", sum);
-
-    let test = tmp.len() >= 1;
-    println!("test {:?}", test);
-
-    let val = if test { sum } else { 0 };
-    println!("val {:?}", val);
-    val
+    let piles_of_three: Vec<&usize> = faces_count.iter().filter(|f| **f >= 3).collect();
+    if piles_of_three.len() >= 1 {
+        sum_all_dice(hand)
+    } else {
+        0
+    }
 }
 
 #[cfg(test)]
