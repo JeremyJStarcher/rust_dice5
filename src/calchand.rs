@@ -279,7 +279,37 @@ mod tests {
 
     #[test]
     fn test_small_straight_low_straight() {
-        let test_dice: Vec<dice::DieFace> = vec![1, 2, 3, 4, 1];
+        let test_dice: Vec<dice::DieFace> = vec![1, 4, 3, 2, 1];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.small_straight.calc)(&hand);
+        assert_eq!(score, 30);
+    }
+
+    #[test]
+    fn test_small_straight_mid_straight() {
+        let test_dice: Vec<dice::DieFace> = vec![2, 4, 3, 2, 5];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.small_straight.calc)(&hand);
+        assert_eq!(score, 30);
+    }
+
+    #[test]
+    fn test_small_straight_high_straight() {
+        let test_dice: Vec<dice::DieFace> = vec![6, 3, 4, 6, 5];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.small_straight.calc)(&hand);
+        assert_eq!(score, 30);
+    }
+
+    #[test]
+    fn test_small_straight_large_straight() {
+        let test_dice: Vec<dice::DieFace> = vec![6, 3, 4, 2, 5];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
