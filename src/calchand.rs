@@ -25,6 +25,22 @@ fn sort_faces(hand: &dice::Dice) -> Vec<usize> {
     r
 }
 
+pub fn hand_to_string(hand: &dice::Dice) -> String {
+    let faces_count = sort_faces(hand);
+    let piles_of_at_least_one: Vec<String> = faces_count
+        .iter()
+        .map(|f| {
+            if *f >= 1 {
+                "+".to_string()
+            } else {
+                "-".to_string()
+            }
+        })
+        .collect();
+
+    piles_of_at_least_one.join("")
+}
+
 fn sum_all_dice(hand: &dice::Dice) -> i16 {
     hand.dice.iter().map(|f| *f as i16).sum()
 }
@@ -74,24 +90,20 @@ pub fn calc_4k(hand: &dice::Dice) -> i16 {
 }
 
 pub fn calc_ss(hand: &dice::Dice) -> i16 {
-    let faces_count = sort_faces(hand);
-    let piles_of_at_least_one: Vec<&usize> = faces_count.iter().filter(|f| **f >= 1).collect();
-
-    let vec: Vec<String> = piles_of_at_least_one
-        .iter()
-        .map(|&v| {
-            if *v >= 1 {
-                "+".to_string()
-            } else {
-                "-".to_string()
-            }
-        })
-        .collect();
-
-    let str = vec.join("");
+    let str = hand_to_string(hand);
 
     if str.contains("++++") {
         30
+    } else {
+        0
+    }
+}
+
+pub fn calc_ls(hand: &dice::Dice) -> i16 {
+    let str = hand_to_string(hand);
+
+    if str.contains("+++++") {
+        40
     } else {
         0
     }
@@ -315,6 +327,16 @@ mod tests {
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.small_straight.calc)(&hand);
         assert_eq!(score, 30);
+    }
+
+    #[test]
+    fn test_small_straight_no_straight() {
+        let test_dice: Vec<dice::DieFace> = vec![6, 3, 3, 2, 5];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.small_straight.calc)(&hand);
+        assert_eq!(score, 0);
     }
 
     #[test]

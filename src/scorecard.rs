@@ -92,7 +92,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
             long_name: "Large Straight".to_string(),
             short_name: "ls".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_ls,
         },
         full_house: LineData {
             long_name: "Full House".to_string(),
