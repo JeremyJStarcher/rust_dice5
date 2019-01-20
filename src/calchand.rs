@@ -109,6 +109,17 @@ pub fn calc_ls(hand: &dice::Dice) -> i16 {
     }
 }
 
+pub fn calc_fh(hand: &dice::Dice) -> i16 {
+    let faces_count = sort_faces(hand);
+    let piles_of_at_exactly_3: Vec<&usize> = faces_count.iter().filter(|f| **f == 3).collect();
+    let piles_of_at_exactly_2: Vec<&usize> = faces_count.iter().filter(|f| **f == 2).collect();
+    if piles_of_at_exactly_3.len() >= 1 && piles_of_at_exactly_2.len() >= 1 {
+        25
+    } else {
+        0
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::super::scorecard;
@@ -337,6 +348,46 @@ mod tests {
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.small_straight.calc)(&hand);
         assert_eq!(score, 0);
+    }
+
+    #[test]
+    fn test_large_straight_high_straight() {
+        let test_dice: Vec<dice::DieFace> = vec![6, 3, 4, 2, 5];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.large_straight.calc)(&hand);
+        assert_eq!(score, 40);
+    }
+
+    #[test]
+    fn test_large_straight_low_straight() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 3, 4, 2, 5];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.large_straight.calc)(&hand);
+        assert_eq!(score, 40);
+    }
+
+    #[test]
+    fn test_full_house_no_full_house() {
+        let test_dice: Vec<dice::DieFace> = vec![6, 3, 3, 2, 5];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.full_house.calc)(&hand);
+        assert_eq!(score, 0);
+    }
+
+    #[test]
+    fn test_full_house_full_house() {
+        let test_dice: Vec<dice::DieFace> = vec![6, 3, 3, 6, 3];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.full_house.calc)(&hand);
+        assert_eq!(score, 25);
     }
 
     #[test]

@@ -98,7 +98,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
             long_name: "Full House".to_string(),
             short_name: "fh".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_fh,
         },
         chance: LineData {
             long_name: "Chance".to_string(),
