@@ -7,6 +7,7 @@ pub type DieFace = i8;
 #[derive(Debug)]
 pub struct Dice {
     pub dice: Vec<DieFace>,
+    pub rolls_left: i8,
 }
 
 impl fmt::Display for Dice {
@@ -35,6 +36,7 @@ impl fmt::Display for Dice {
 impl Dice {
     pub const NUMBER_OF_DICE: usize = 5;
     pub const NUMBER_OF_FACES: i8 = 6;
+    pub const ROLLS_PER_TURN: i8 = 3;
 
     pub fn roll_die() -> DieFace {
         let mut rng = rand::thread_rng();
@@ -43,18 +45,22 @@ impl Dice {
 
     #[allow(dead_code)]
     pub fn roll_fake(dice: Vec<DieFace>) -> Self {
-        let dice = Self { dice };
+        let dice = Self {
+            dice,
+            rolls_left: Self::ROLLS_PER_TURN,
+        };
         dice
     }
 
-    pub fn roll_all() -> Self {
-        let hand = Self::get_empty_hand();
+    pub fn first_roll() -> Self {
+        let dice: Vec<DieFace> = (0..Self::NUMBER_OF_DICE)
+            .map(|_i| Self::roll_die())
+            .collect();
 
-        let reroll_flags: Vec<bool> = hand.dice.iter().map(|_i| true).collect();
-        println!("reroll_flags {:?}", reroll_flags);
-
-        let new_hand = Self::reroll_hand(hand, reroll_flags);
-        new_hand
+        Dice {
+            dice,
+            rolls_left: Self::ROLLS_PER_TURN,
+        }
     }
 
     pub fn reroll_hand(hand: Self, reroll: Vec<bool>) -> Self {
@@ -72,16 +78,10 @@ impl Dice {
             })
             .collect();
 
-        return Self { dice };
-    }
-
-    pub fn get_empty_hand() -> Self {
-        let mut dice = Vec::with_capacity(Self::NUMBER_OF_DICE);
-
-        for _i in 0..Self::NUMBER_OF_DICE {
-            dice.push(0);
-        }
-        Self { dice }
+        return Self {
+            dice,
+            rolls_left: hand.rolls_left - 1,
+        };
     }
 }
 
@@ -90,17 +90,24 @@ mod tests {
     use super::Dice;
 
     #[test]
-    fn roll_all_correct_number_of_dice() {
-        let hand = Dice::roll_all();
+    fn first_roll_correct_number_of_dice() {
+        let hand = Dice::first_roll();
 
         assert_eq!(hand.dice.len(), Dice::NUMBER_OF_DICE);
+        assert_eq!(hand.rolls_left, Dice::ROLLS_PER_TURN);
     }
 
     #[test]
-    fn get_empty_hand_correct_number_of_dice() {
-        let hand = Dice::get_empty_hand();
+    fn re_roll_correct_number_of_dice() {
+        let hand = Dice::first_roll();
+        let reroll_flags: Vec<bool> = hand.dice.iter().map(|_i| true).collect();
 
         assert_eq!(hand.dice.len(), Dice::NUMBER_OF_DICE);
+        assert_eq!(hand.rolls_left, Dice::ROLLS_PER_TURN);
+
+        let hand2 = Dice::reroll_hand(hand, reroll_flags);
+        assert_eq!(hand2.dice.len(), Dice::NUMBER_OF_DICE);
+        assert_eq!(hand2.rolls_left, Dice::ROLLS_PER_TURN - 1);
     }
 
     #[test]
