@@ -24,6 +24,8 @@ pub struct ScoreCardData {
     pub full_house: LineData,
     pub chance: LineData,
     pub yahtzee: LineData,
+
+    pub yahtzee_bonus: i8,
 }
 
 pub fn get_new_scorecard_data() -> ScoreCardData {
@@ -106,6 +108,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
             value: None,
             calc: calchand::calc_yahtzee,
         },
+        yahtzee_bonus: 0,
     };
     card
 }
