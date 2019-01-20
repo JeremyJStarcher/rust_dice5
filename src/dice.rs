@@ -38,26 +38,26 @@ impl Dice {
 
     pub fn roll_die() -> DieFace {
         let mut rng = rand::thread_rng();
-        rng.gen_range(0, Dice::NUMBER_OF_FACES) + 1
+        rng.gen_range(0, Self::NUMBER_OF_FACES) + 1
     }
 
     #[allow(dead_code)]
-    pub fn roll_fake(dice: Vec<DieFace>) -> Dice {
-        let dice = Dice { dice };
+    pub fn roll_fake(dice: Vec<DieFace>) -> Self {
+        let dice = Self { dice };
         dice
     }
 
-    pub fn roll_all() -> Dice {
-        let hand = Dice::get_empty_hand();
+    pub fn roll_all() -> Self {
+        let hand = Self::get_empty_hand();
 
         let reroll_flags: Vec<bool> = hand.dice.iter().map(|_i| true).collect();
         println!("reroll_flags {:?}", reroll_flags);
 
-        let new_hand = Dice::reroll_hand(hand, reroll_flags);
+        let new_hand = Self::reroll_hand(hand, reroll_flags);
         new_hand
     }
 
-    pub fn reroll_hand(hand: Dice, reroll: Vec<bool>) -> Dice {
+    pub fn reroll_hand(hand: Self, reroll: Vec<bool>) -> Self {
         if hand.dice.len() != reroll.len() {
             panic!("dice.length and re-roll length must match");
         }
@@ -67,21 +67,21 @@ impl Dice {
             .iter()
             .zip(reroll)
             .map(|(face, flag)| {
-                let f = if flag { Dice::roll_die() } else { *face };
+                let f = if flag { Self::roll_die() } else { *face };
                 f
             })
             .collect();
 
-        return Dice { dice };
+        return Self { dice };
     }
 
-    pub fn get_empty_hand() -> Dice {
-        let mut dice = Vec::with_capacity(Dice::NUMBER_OF_DICE);
+    pub fn get_empty_hand() -> Self {
+        let mut dice = Vec::with_capacity(Self::NUMBER_OF_DICE);
 
-        for _i in 0..Dice::NUMBER_OF_DICE {
+        for _i in 0..Self::NUMBER_OF_DICE {
             dice.push(0);
         }
-        Dice { dice }
+        Self { dice }
     }
 }
 
