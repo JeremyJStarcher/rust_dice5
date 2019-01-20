@@ -63,6 +63,16 @@ pub fn calc_3k(hand: &dice::Dice) -> i16 {
     }
 }
 
+pub fn calc_4k(hand: &dice::Dice) -> i16 {
+    let faces_count = sort_faces(hand);
+    let piles_of_four: Vec<&usize> = faces_count.iter().filter(|f| **f >= 4).collect();
+    if piles_of_four.len() >= 1 {
+        sum_all_dice(hand)
+    } else {
+        0
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::super::scorecard;
@@ -150,6 +160,46 @@ mod tests {
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.three_kind.calc)(&hand);
         assert_eq!(score, 5);
+    }
+
+    #[test]
+    fn test_3k_no_3k() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 1, 2, 2, 3];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.three_kind.calc)(&hand);
+        assert_eq!(score, 0);
+    }
+
+    #[test]
+    fn test_4k_three_sixes() {
+        let test_dice: Vec<dice::DieFace> = vec![6, 6, 6, 6, 2];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.four_kind.calc)(&hand);
+        assert_eq!(score, (6 * 4) + 2);
+    }
+
+    #[test]
+    fn test_4k_five_aces() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 1, 1, 1, 1];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.four_kind.calc)(&hand);
+        assert_eq!(score, 5);
+    }
+
+    #[test]
+    fn test_4k_no_4k() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 1, 1, 2, 2];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.four_kind.calc)(&hand);
+        assert_eq!(score, 0);
     }
 
     #[test]

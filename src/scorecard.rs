@@ -80,7 +80,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
             long_name: "Four of a Kind".to_string(),
             short_name: "4k".to_string(),
             value: None,
-            calc: k,
+            calc: calchand::calc_4k,
         },
         small_straight: LineData {
             long_name: "Small Straight".to_string(),
