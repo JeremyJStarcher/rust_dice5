@@ -116,6 +116,17 @@ mod tests {
         let score = (scorecard.ace.calc)(&hand);
         assert_eq!(score, 1 * 5);
     }
+
+    #[test]
+    fn test_ace_two_aces() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 1, 2, 3, 2];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.ace.calc)(&hand);
+        assert_eq!(score, 1 * 2);
+    }
+
     #[test]
     fn test_two_all_twos() {
         let test_dice: Vec<dice::DieFace> = vec![2, 2, 2, 2, 2];
@@ -127,13 +138,33 @@ mod tests {
     }
 
     #[test]
-    fn test_thre_all_threes() {
+    fn test_two_two_twos() {
+        let test_dice: Vec<dice::DieFace> = vec![2, 2, 3, 4, 5];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.two.calc)(&hand);
+        assert_eq!(score, 2 * 2);
+    }
+
+    #[test]
+    fn test_three_all_threes() {
         let test_dice: Vec<dice::DieFace> = vec![3, 3, 3, 3, 3];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.three.calc)(&hand);
         assert_eq!(score, 3 * 5);
+    }
+
+    #[test]
+    fn test_three_four_threes() {
+        let test_dice: Vec<dice::DieFace> = vec![3, 3, 3, 3, 1];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.three.calc)(&hand);
+        assert_eq!(score, 3 * 4);
     }
 
     #[test]
@@ -144,6 +175,16 @@ mod tests {
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.four.calc)(&hand);
         assert_eq!(score, 4 * 5);
+    }
+
+    #[test]
+    fn test_four_zero_fours() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 2, 3, 5, 5];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.four.calc)(&hand);
+        assert_eq!(score, 4 * 0);
     }
 
     #[test]
@@ -187,6 +228,16 @@ mod tests {
     }
 
     #[test]
+    fn test_3k_four_threes() {
+        let test_dice: Vec<dice::DieFace> = vec![3, 3, 3, 3, 1];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.three_kind.calc)(&hand);
+        assert_eq!(score, 3 * 4 + 1);
+    }
+
+    #[test]
     fn test_3k_no_3k() {
         let test_dice: Vec<dice::DieFace> = vec![1, 1, 2, 2, 3];
         let hand = dice::Dice::roll_fake(test_dice);
@@ -197,7 +248,7 @@ mod tests {
     }
 
     #[test]
-    fn test_4k_three_sixes() {
+    fn test_4k_four_sixes() {
         let test_dice: Vec<dice::DieFace> = vec![6, 6, 6, 6, 2];
         let hand = dice::Dice::roll_fake(test_dice);
 
