@@ -29,12 +29,9 @@ pub fn hand_to_string(hand: &dice::Dice) -> String {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_one: Vec<String> = faces_count
         .iter()
-        .map(|f| {
-            if *f >= 1 {
-                "+".to_string()
-            } else {
-                "-".to_string()
-            }
+        .map(|f| match *f >= 1 {
+            true => "+".to_string(),
+            false => "-".to_string(),
         })
         .collect();
 
@@ -72,50 +69,45 @@ pub fn calc_six(hand: &dice::Dice) -> i16 {
 pub fn calc_3k(hand: &dice::Dice) -> i16 {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_three: Vec<&usize> = faces_count.iter().filter(|f| **f >= 3).collect();
-    if piles_of_at_least_three.len() >= 1 {
-        sum_all_dice(hand)
-    } else {
-        0
+    match piles_of_at_least_three.len() >= 1 {
+        true => sum_all_dice(hand),
+        false => 0,
     }
 }
 
 pub fn calc_4k(hand: &dice::Dice) -> i16 {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_four: Vec<&usize> = faces_count.iter().filter(|f| **f >= 4).collect();
-    if piles_of_at_least_four.len() >= 1 {
-        sum_all_dice(hand)
-    } else {
-        0
+    match piles_of_at_least_four.len() >= 1 {
+        true => sum_all_dice(hand),
+        false => 0,
     }
 }
 
 pub fn calc_ss(hand: &dice::Dice) -> i16 {
     let str = hand_to_string(hand);
 
-    if str.contains("++++") {
-        30
-    } else {
-        0
+    match str.contains("++++") {
+        true => 30,
+        false => 0,
     }
 }
 
 pub fn calc_ls(hand: &dice::Dice) -> i16 {
     let str = hand_to_string(hand);
 
-    if str.contains("+++++") {
-        40
-    } else {
-        0
+    match str.contains("+++++") {
+        true => 40,
+        false => 0,
     }
 }
 
 pub fn calc_yahtzee(hand: &dice::Dice) -> i16 {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_five: Vec<&usize> = faces_count.iter().filter(|f| **f >= 5).collect();
-    if piles_of_at_least_five.len() >= 1 {
-        50
-    } else {
-        0
+    match piles_of_at_least_five.len() >= 1 {
+        true => 50,
+        false => 0,
     }
 }
 
@@ -123,10 +115,10 @@ pub fn calc_fh(hand: &dice::Dice) -> i16 {
     let faces_count = sort_faces(hand);
     let piles_of_at_exactly_3: Vec<&usize> = faces_count.iter().filter(|f| **f == 3).collect();
     let piles_of_at_exactly_2: Vec<&usize> = faces_count.iter().filter(|f| **f == 2).collect();
-    if piles_of_at_exactly_3.len() >= 1 && piles_of_at_exactly_2.len() >= 1 {
-        25
-    } else {
-        0
+
+    match piles_of_at_exactly_3.len() >= 1 && piles_of_at_exactly_2.len() >= 1 {
+        true => 25,
+        false => 0,
     }
 }
 

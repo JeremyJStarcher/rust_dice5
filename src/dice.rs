@@ -15,17 +15,14 @@ impl fmt::Display for Dice {
         let codes: Vec<String> = self
             .dice
             .iter()
-            .map(|k| {
-                let m = match k {
-                    1 => "⚀".to_string(),
-                    2 => "⚁".to_string(),
-                    3 => "⚂".to_string(),
-                    4 => "⚃".to_string(),
-                    5 => "⚄".to_string(),
-                    6 => "⚅".to_string(),
-                    _ => "🎲".to_string(),
-                };
-                m
+            .map(|k| match k {
+                1 => "⚀".to_string(),
+                2 => "⚁".to_string(),
+                3 => "⚂".to_string(),
+                4 => "⚃".to_string(),
+                5 => "⚄".to_string(),
+                6 => "⚅".to_string(),
+                _ => "🎲".to_string(),
             })
             .collect();
 
@@ -72,9 +69,9 @@ impl Dice {
             .dice
             .iter()
             .zip(reroll)
-            .map(|(face, flag)| {
-                let f = if flag { Self::roll_die() } else { *face };
-                f
+            .map(|(face, flag)| match flag {
+                true => Self::roll_die(),
+                false => *face,
             })
             .collect();
 
