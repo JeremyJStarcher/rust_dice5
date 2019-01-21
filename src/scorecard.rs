@@ -3,6 +3,12 @@ use super::dice;
 use std::fmt;
 
 #[derive(PartialEq, Eq, Debug)]
+pub enum SetError {
+    AlreadySet,
+    NotFound,
+}
+
+#[derive(PartialEq, Eq, Debug)]
 pub enum LineId {
     Ace,
     Two,
@@ -86,6 +92,21 @@ impl ScoreCardData {
         match line {
             None => panic!("not found"),
             Some(x) => x,
+        }
+    }
+
+    pub fn set_val(&mut self, short_name: &String, value: i16) -> Result<bool, SetError> {
+        let line = self.line.iter_mut().find(|l| l.short_name == *short_name);
+
+        match line {
+            None => Err(SetError::NotFound),
+            Some(l) => match l.value {
+                None => {
+                    l.value = Some(value);
+                    Ok(true)
+                }
+                _ => Err(SetError::AlreadySet),
+            },
         }
     }
 }
@@ -193,11 +214,87 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
 #[cfg(test)]
 mod tests {
+    use super::LineId as L;
+    use super::SetError as SErr;
     use super::*;
 
     #[test]
     fn get_new_scorecard_returns_card() {
         let scorecard = get_new_scorecard_data();
-        // assert_eq!(scorecard.ace.value, None);
+        let score = scorecard.by_id(L::Ace).value;
+        assert_eq!(score, None);
+    }
+
+    #[test]
+    fn set_score_short_name_exists_score_set() {
+        let mut scorecard = get_new_scorecard_data();
+        let points = 99;
+
+        let line = scorecard.by_id(L::Ace);
+        let result = scorecard.set_val(&line.short_name.clone(), points);
+        match result {
+            Err(SErr::NotFound) => {
+                panic!("Not found shouldn't happen");
+            }
+            Err(SErr::AlreadySet) => {
+                panic!("Already Set shoudln't happen");
+            }
+            Ok(_) => {
+                let p = scorecard.by_id(L::Ace).value.unwrap();
+                assert_eq!(p, points);
+                assert!(true);
+            }
+        }
+    }
+
+    #[test]
+    fn set_score_short_name_not_exists_err_set() {
+        let mut scorecard = get_new_scorecard_data();
+        let points = 99;
+
+        let short_name = "ZZZZ".to_string();
+        let result = scorecard.set_val(&short_name, points);
+        match result {
+            Err(SErr::NotFound) => {
+                assert!(true);
+            }
+            Err(SErr::AlreadySet) => {
+                panic!("Already Set shouldn't happen");
+            }
+            Ok(_) => {
+                panic!("Value Set shouldn't happen");
+            }
+        }
+    }
+
+    #[test]
+    fn set_score_short_name_exists_score_set_twice() {
+        let mut scorecard = get_new_scorecard_data();
+        let points1 = 99;
+        let points2 = 32;
+
+        let line = scorecard.by_id(L::Ace);
+        let sname = line.short_name.clone();
+
+        let result1 = scorecard.set_val(&sname, points1);
+        match result1 {
+            Err(SErr::NotFound) => {}
+            Err(SErr::AlreadySet) => {}
+            Ok(_) => {}
+        }
+
+        let result = scorecard.set_val(&sname, points2);
+        match result {
+            Err(SErr::NotFound) => {
+                panic!("Not found shouldn't happen");
+            }
+            Err(SErr::AlreadySet) => {
+                let p = scorecard.by_id(L::Ace).value.unwrap();
+                assert_eq!(p, points1);
+            }
+            Ok(_) => {
+                panic!("OK shouldn't happen");
+            }
+        }
     }
 }

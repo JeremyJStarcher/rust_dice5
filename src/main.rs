@@ -14,6 +14,21 @@ fn main() {
 
     let mut scorecard = scorecard::get_new_scorecard_data();
     let points = calchand::calc_ace(&hand2);
-    // scorecard.ace.value = Some(points);
+
+    let result = scorecard.set_val(&"1".to_string(), points);
+    match result {
+        Err(scorecard::SetError::NotFound) => {}
+        Err(scorecard::SetError::AlreadySet) => {}
+        Ok(_) => {}
+    }
+
+    let points = calchand::calc_two(&hand2);
+    let result = scorecard.set_val(&"2".to_string(), points);
+    match result {
+        Err(scorecard::SetError::NotFound) => {}
+        Err(scorecard::SetError::AlreadySet) => {}
+        Ok(_) => {}
+    }
+
     println!("{}", scorecard);
 }
