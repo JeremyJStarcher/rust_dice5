@@ -14,6 +14,6 @@ fn main() {
 
     let mut scorecard = scorecard::get_new_scorecard_data();
     let points = calchand::calc_ace(&hand2);
-    scorecard.ace.value = Some(points);
+    // scorecard.ace.value = Some(points);
     println!("{}", scorecard);
 }
