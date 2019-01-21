@@ -1,6 +1,7 @@
 mod calchand;
 mod dice;
 mod scorecard;
+mod ui;
 
 fn main() {
     let hand = dice::Dice::first_roll();
@@ -29,6 +30,8 @@ fn main() {
         Err(scorecard::SetError::AlreadySet) => {}
         Ok(_) => {}
     }
+    ui::show_card(&scorecard);
+    // println!("{}", scorecard);
 
-    println!("{}", scorecard);
+    // ui::demo();
 }
