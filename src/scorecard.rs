@@ -1,5 +1,6 @@
 use super::calchand;
 use super::dice;
+use std::fmt;
 
 #[derive(Debug)]
 pub struct LineData {
@@ -7,6 +8,27 @@ pub struct LineData {
     pub short_name: String,
     pub value: Option<i16>,
     pub calc: fn(dice: &dice::Dice) -> i16,
+}
+impl fmt::Display for LineData {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // HELP: Avoid `clone`
+        let sname = self.short_name.clone();
+        let prefix = "<".to_string();
+        let suffix = ">".to_string();
+
+        let val = match self.value {
+            None => [prefix, sname, suffix].join(""),
+            _ => self.value.unwrap().to_string(),
+        };
+        write!(
+            f,
+            "{:width$} {:>width2$}",
+            self.long_name,
+            val,
+            width = 15,
+            width2 = 5
+        )
+    }
 }
 
 #[derive(Debug)]
@@ -26,6 +48,29 @@ pub struct ScoreCardData {
     pub yahtzee: LineData,
 
     pub yahtzee_bonus: i8,
+}
+
+impl fmt::Display for ScoreCardData {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let out: Vec<String> = vec![
+            format!("{}", self.ace),
+            format!("{}", self.two),
+            format!("{}", self.three),
+            format!("{}", self.four),
+            format!("{}", self.five),
+            format!("{}", self.six),
+            format!("-------------------------"),
+            format!("{}", self.three_kind),
+            format!("{}", self.four_kind),
+            format!("{}", self.small_straight),
+            format!("{}", self.large_straight),
+            format!("{}", self.full_house),
+            format!("{}", self.chance),
+            format!("{}", self.yahtzee),
+        ];
+
+        write!(f, "{}", out.join("\n"))
+    }
 }
 
 pub fn get_new_scorecard_data() -> ScoreCardData {
