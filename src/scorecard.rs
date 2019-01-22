@@ -31,7 +31,7 @@ pub struct LineData {
     pub long_name: String,
     pub short_name: String,
     pub value: Option<i16>,
-    pub calc: fn(dice: &dice::Dice) -> i16,
+    pub calc: fn(dice: &dice::Dice, special_dice: bool) -> i16,
 }
 
 impl fmt::Display for LineData {
