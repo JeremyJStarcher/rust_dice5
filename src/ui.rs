@@ -1,8 +1,9 @@
 extern crate term_painter;
 
-use term_painter::Attr::*;
+// use term_painter::Attr::*;
 use term_painter::Color::*;
-use term_painter::{Color, ToStyle};
+// use term_painter::{Color, ToStyle};
+use term_painter::{ToStyle};
 
 use super::scorecard;
 use super::scorecard::LineId;
