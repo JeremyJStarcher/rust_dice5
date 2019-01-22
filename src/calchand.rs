@@ -47,6 +47,12 @@ fn sum_all_dice(hand: &dice::Dice) -> i16 {
     hand.dice.iter().map(|f| *f as i16).sum()
 }
 
+fn is_dice5(hand: &dice::Dice) -> bool {
+    let faces_count = sort_faces(hand);
+    let piles_of_at_least_five: Vec<&usize> = faces_count.iter().filter(|f| **f >= 5).collect();
+    piles_of_at_least_five.len() >= 1
+}
+
 pub fn calc_ace(hand: &dice::Dice, _special_dice5: bool) -> i16 {
     sum_faces(hand, 1)
 }
@@ -89,7 +95,15 @@ pub fn calc_4k(hand: &dice::Dice, _special_dice5: bool) -> i16 {
     }
 }
 
-pub fn calc_ss(hand: &dice::Dice, _special_dice5: bool) -> i16 {
+pub fn calc_ss(hand: &dice::Dice, special_dice5: bool) -> i16 {
+    if special_dice5 {
+        if is_dice5(hand) {
+            return VALUE_SMALL_STRAIGHT;
+        } else {
+            panic!("Illegal call");
+        }
+    }
+
     let str = hand_to_string(hand);
 
     match str.contains("++++") {
@@ -98,7 +112,15 @@ pub fn calc_ss(hand: &dice::Dice, _special_dice5: bool) -> i16 {
     }
 }
 
-pub fn calc_ls(hand: &dice::Dice, _special_dice5: bool) -> i16 {
+pub fn calc_ls(hand: &dice::Dice, special_dice5: bool) -> i16 {
+    if special_dice5 {
+        if is_dice5(hand) {
+            return VALUE_LARGE_STRAIGHT;
+        } else {
+            panic!("Illegal call");
+        }
+    }
+
     let str = hand_to_string(hand);
 
     match str.contains("+++++") {
@@ -108,15 +130,21 @@ pub fn calc_ls(hand: &dice::Dice, _special_dice5: bool) -> i16 {
 }
 
 pub fn calc_dice5(hand: &dice::Dice, _special_dice5: bool) -> i16 {
-    let faces_count = sort_faces(hand);
-    let piles_of_at_least_five: Vec<&usize> = faces_count.iter().filter(|f| **f >= 5).collect();
-    match piles_of_at_least_five.len() >= 1 {
+    match is_dice5(hand) {
         true => VALUE_DICE5,
         false => 0,
     }
 }
 
-pub fn calc_fh(hand: &dice::Dice, _special_dice5: bool) -> i16 {
+pub fn calc_fh(hand: &dice::Dice, special_dice5: bool) -> i16 {
+    if special_dice5 {
+        if is_dice5(hand) {
+            return VALUE_FULL_HOUSE;
+        } else {
+            panic!("Illegal call");
+        }
+    }
+
     let faces_count = sort_faces(hand);
     let piles_of_at_exactly_3: Vec<&usize> = faces_count.iter().filter(|f| **f == 3).collect();
     let piles_of_at_exactly_2: Vec<&usize> = faces_count.iter().filter(|f| **f == 2).collect();
@@ -358,12 +386,42 @@ mod tests {
     }
 
     #[test]
+    fn test_small_straight_dice5_special() {
+        let test_dice: Vec<dice::DieFace> = vec![3, 3, 3, 3, 3];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.by_id(L::SmallStraight).calc)(&hand, true);
+        assert_eq!(score, VALUE_SMALL_STRAIGHT);
+    }
+
+    #[test]
     fn test_large_straight_high_straight() {
         let test_dice: Vec<dice::DieFace> = vec![6, 3, 4, 2, 5];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.by_id(L::LargeStraight).calc)(&hand, false);
+        assert_eq!(score, VALUE_LARGE_STRAIGHT);
+    }
+
+    #[test]
+    fn test_large_straight_no_straight() {
+        let test_dice: Vec<dice::DieFace> = vec![6, 2, 2, 2, 5];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.by_id(L::LargeStraight).calc)(&hand, false);
+        assert_eq!(score, 0);
+    }
+
+    #[test]
+    fn test_large_straight_dice5_special() {
+        let test_dice: Vec<dice::DieFace> = vec![1, 1, 1, 1, 1];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.by_id(L::LargeStraight).calc)(&hand, true);
         assert_eq!(score, VALUE_LARGE_STRAIGHT);
     }
 
@@ -394,6 +452,16 @@ mod tests {
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.by_id(L::FullHouse).calc)(&hand, false);
+        assert_eq!(score, VALUE_FULL_HOUSE);
+    }
+
+    #[test]
+    fn test_full_house_dice5_special() {
+        let test_dice: Vec<dice::DieFace> = vec![2, 2, 2, 2, 2];
+        let hand = dice::Dice::roll_fake(test_dice);
+
+        let scorecard = scorecard::get_new_scorecard_data();
+        let score = (scorecard.by_id(L::FullHouse).calc)(&hand, true);
         assert_eq!(score, VALUE_FULL_HOUSE);
     }
 
