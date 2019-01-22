@@ -1,2 +1,2 @@
-# rust_yahtzee
-Yahtzee written in Rust (as a demo project)
+# rust_Dice5
+Yahtzee clone written in Rust (as a demo project)

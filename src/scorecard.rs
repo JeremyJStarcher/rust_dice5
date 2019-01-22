@@ -22,7 +22,7 @@ pub enum LineId {
     LargeStraight,
     FullHouse,
     Chance,
-    Yahtzee,
+    Dice5,
 }
 
 #[derive(Debug)]
@@ -58,7 +58,7 @@ impl fmt::Display for LineData {
 
 pub struct ScoreCardData {
     pub line: Vec<LineData>,
-    pub yahtzee_bonus: i8,
+    pub bonus_dice5: i8,
 }
 
 impl fmt::Display for ScoreCardData {
@@ -77,7 +77,7 @@ impl fmt::Display for ScoreCardData {
             format!("{}", self.by_id(LineId::LargeStraight)),
             format!("{}", self.by_id(LineId::FullHouse)),
             format!("{}", self.by_id(LineId::Chance)),
-            format!("{}", self.by_id(LineId::Yahtzee)),
+            format!("{}", self.by_id(LineId::Dice5)),
         ];
 
         write!(f, "{}", out.join("\n"))
@@ -198,17 +198,17 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
             calc: calchand::calc_chance,
         },
         LineData {
-            id: LineId::Yahtzee,
-            long_name: "Yahtzee".to_string(),
+            id: LineId::Dice5,
+            long_name: "Dice 5".to_string(),
             short_name: "y".to_string(),
             value: None,
-            calc: calchand::calc_yahtzee,
+            calc: calchand::calc_dice5,
         },
     ];
 
     ScoreCardData {
         line: z,
-        yahtzee_bonus: 0,
+        bonus_dice5: 0,
     }
 }
 

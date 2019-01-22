@@ -102,7 +102,7 @@ pub fn calc_ls(hand: &dice::Dice) -> i16 {
     }
 }
 
-pub fn calc_yahtzee(hand: &dice::Dice) -> i16 {
+pub fn calc_dice5(hand: &dice::Dice) -> i16 {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_five: Vec<&usize> = faces_count.iter().filter(|f| **f >= 5).collect();
     match piles_of_at_least_five.len() >= 1 {
@@ -403,22 +403,22 @@ mod tests {
     }
 
     #[test]
-    fn test_yahtzee_has_yahzee() {
+    fn test_dice5_has_dice5() {
         let test_dice: Vec<dice::DieFace> = vec![1, 1, 1, 1, 1];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.by_id(L::Yahtzee).calc)(&hand);
+        let score = (scorecard.by_id(L::Dice5).calc)(&hand);
         assert_eq!(score, 50);
     }
 
     #[test]
-    fn test_yahtzee_has_no_yahzee() {
+    fn test_dice5_has_no_dice5() {
         let test_dice: Vec<dice::DieFace> = vec![2, 1, 1, 1, 1];
         let hand = dice::Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.by_id(L::Yahtzee).calc)(&hand);
+        let score = (scorecard.by_id(L::Dice5).calc)(&hand);
         assert_eq!(score, 0);
     }
 
