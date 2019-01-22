@@ -1,5 +1,10 @@
 use super::dice;
 
+const VALUE_SMALL_STRAIGHT: i16 = 30;
+const VALUE_LARGE_STRAIGHT: i16 = 40;
+const VALUE_FULL_HOUSE: i16 = 25;
+const VALUE_DICE5: i16 = 50;
+
 fn sum_faces(hand: &dice::Dice, face: dice::DieFace) -> i16 {
     let sum = hand
         .dice
@@ -88,7 +93,7 @@ pub fn calc_ss(hand: &dice::Dice, _special_dice5: bool) -> i16 {
     let str = hand_to_string(hand);
 
     match str.contains("++++") {
-        true => 30,
+        true => VALUE_SMALL_STRAIGHT,
         false => 0,
     }
 }
@@ -97,7 +102,7 @@ pub fn calc_ls(hand: &dice::Dice, _special_dice5: bool) -> i16 {
     let str = hand_to_string(hand);
 
     match str.contains("+++++") {
-        true => 40,
+        true => VALUE_LARGE_STRAIGHT,
         false => 0,
     }
 }
@@ -106,7 +111,7 @@ pub fn calc_dice5(hand: &dice::Dice, _special_dice5: bool) -> i16 {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_five: Vec<&usize> = faces_count.iter().filter(|f| **f >= 5).collect();
     match piles_of_at_least_five.len() >= 1 {
-        true => 50,
+        true => VALUE_DICE5,
         false => 0,
     }
 }
@@ -117,7 +122,7 @@ pub fn calc_fh(hand: &dice::Dice, _special_dice5: bool) -> i16 {
     let piles_of_at_exactly_2: Vec<&usize> = faces_count.iter().filter(|f| **f == 2).collect();
 
     match piles_of_at_exactly_3.len() >= 1 && piles_of_at_exactly_2.len() >= 1 {
-        true => 25,
+        true => VALUE_FULL_HOUSE,
         false => 0,
     }
 }
@@ -309,7 +314,7 @@ mod tests {
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.by_id(L::SmallStraight).calc)(&hand, false);
-        assert_eq!(score, 30);
+        assert_eq!(score, VALUE_SMALL_STRAIGHT);
     }
 
     #[test]
@@ -319,7 +324,7 @@ mod tests {
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.by_id(L::SmallStraight).calc)(&hand, false);
-        assert_eq!(score, 30);
+        assert_eq!(score, VALUE_SMALL_STRAIGHT);
     }
 
     #[test]
@@ -329,7 +334,7 @@ mod tests {
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.by_id(L::SmallStraight).calc)(&hand, false);
-        assert_eq!(score, 30);
+        assert_eq!(score, VALUE_SMALL_STRAIGHT);
     }
 
     #[test]
@@ -339,7 +344,7 @@ mod tests {
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.by_id(L::SmallStraight).calc)(&hand, false);
-        assert_eq!(score, 30);
+        assert_eq!(score, VALUE_SMALL_STRAIGHT);
     }
 
     #[test]
@@ -359,7 +364,7 @@ mod tests {
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.by_id(L::LargeStraight).calc)(&hand, false);
-        assert_eq!(score, 40);
+        assert_eq!(score, VALUE_LARGE_STRAIGHT);
     }
 
     #[test]
@@ -369,7 +374,7 @@ mod tests {
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.by_id(L::LargeStraight).calc)(&hand, false);
-        assert_eq!(score, 40);
+        assert_eq!(score, VALUE_LARGE_STRAIGHT);
     }
 
     #[test]
@@ -389,7 +394,7 @@ mod tests {
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.by_id(L::FullHouse).calc)(&hand, false);
-        assert_eq!(score, 25);
+        assert_eq!(score, VALUE_FULL_HOUSE);
     }
 
     #[test]
@@ -409,7 +414,7 @@ mod tests {
 
         let scorecard = scorecard::get_new_scorecard_data();
         let score = (scorecard.by_id(L::Dice5).calc)(&hand, false);
-        assert_eq!(score, 50);
+        assert_eq!(score, VALUE_DICE5);
     }
 
     #[test]
