@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 rand = "0.6.4"
 term-painter = "0.2.4"
+text_io = "0.1.7"
