@@ -5,8 +5,10 @@ use term_painter::Color::*;
 // use term_painter::{Color, ToStyle};
 use term_painter::ToStyle;
 
+use super::dice;
 use super::scorecard;
 use super::scorecard::LineId;
+
 pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
     let line = score_card.by_id(id);
 
@@ -63,6 +65,67 @@ pub fn show_card(score_card: &scorecard::ScoreCardData) {
     println!("");
 }
 
+pub fn show_hand(hand: &dice::Dice) {
+    const SIX: &[&str] = &[
+        "o   o", //
+        "o   o", //
+        "o   o", //
+    ];
+    const FIVE: &[&str] = &[
+        "o   o", //
+        "  o  ", //
+        "o   o", //
+    ];
+    const FOUR: &[&str] = &[
+        "o   o", //
+        "     ", //
+        "o   o", //
+    ];
+    const THREE: &[&str] = &[
+        "o    ", //
+        "  o  ", //
+        "    o", //
+    ];
+    const TWO: &[&str] = &[
+        "o    ", //
+        "     ", //
+        "    o", //
+    ];
+    const ONE: &[&str] = &[
+        "     ", //
+        "  o  ", //
+        "     ", //
+    ];
+    const LINES: usize = 3;
+
+    for _ in 0..hand.dice.len() {
+        print!("+-----+  ");
+    }
+    println!("");
+
+    for l in 0..LINES {
+        for d in 0..hand.dice.len() {
+            let v = hand.dice[d];
+            let face = match v {
+                1 => ONE,
+                2 => TWO,
+                3 => THREE,
+                4 => FOUR,
+                5 => FIVE,
+                6 => SIX,
+                _ => panic!("Umknown face"),
+            };
+
+            let s = face[l];
+            print!("|{}|  ", s);
+        }
+        println!("");
+    }
+    for _ in 0..hand.dice.len() {
+        print!("+-----+  ");
+    }
+    println!("");
+}
 // pub fn demo() {
 //     struct_sizes();
 

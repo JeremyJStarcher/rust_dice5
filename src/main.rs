@@ -24,6 +24,7 @@ fn main() {
         let hand = dice::Dice::first_roll();
 
         ui::show_card(&scorecard);
+        ui::show_hand(&hand);
 
         println!("Your Play >> ");
         let line = read_line();
