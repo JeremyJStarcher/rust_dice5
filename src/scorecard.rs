@@ -109,6 +109,10 @@ impl ScoreCardData {
             },
         }
     }
+
+    pub fn game_over(&mut self) -> bool {
+        !self.line.iter().any(|l| l.value == None)
+    }
 }
 
 pub fn get_new_scorecard_data() -> ScoreCardData {
@@ -296,5 +300,22 @@ mod tests {
                 panic!("OK shouldn't happen");
             }
         }
+    }
+
+    #[test]
+    fn game_over_new_game() {
+        let mut scorecard = get_new_scorecard_data();
+
+        assert_eq!(false, scorecard.game_over());
+    }
+
+    #[test]
+    fn game_over_game_over() {
+        let mut scorecard = get_new_scorecard_data();
+        for i in 0..scorecard.line.len() {
+            scorecard.line[i].value = Some(4);
+        }
+
+        assert_eq!(true, scorecard.game_over());
     }
 }
