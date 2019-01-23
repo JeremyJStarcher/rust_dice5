@@ -25,7 +25,7 @@ pub enum LineId {
     Dice5,
 }
 
-#[derive(Debug)]
+// #[derive(Debug)]
 pub struct LineData {
     pub id: LineId,
     pub long_name: String,

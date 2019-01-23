@@ -17,7 +17,13 @@ fn main() {
         ui::show_card(&scorecard);
 
         println!("Your Play >> ");
-        let line: String = read!("{}\n");
+
+        let mut line = "".to_string();
+        if cfg!(windows) {
+          line = read!("{}\r\n");
+        } else if cfg!(unix) {
+          line = read!("{}\n");
+        }
 
         let point_result = scorecard.get_points(&line, &hand, false);
         match point_result {
