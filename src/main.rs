@@ -6,6 +6,15 @@ mod ui;
 #[macro_use]
 extern crate text_io;
 
+fn read_line() -> String {
+    if cfg!(windows) {
+        read!("{}\r\n")
+    } else if cfg!(unix) {
+        read!("{}\n")
+    } else {
+        panic!("No idea what to do with this");
+    }
+}
 fn main() {
     use scorecard::SetError as SErr;
 
@@ -17,13 +26,7 @@ fn main() {
         ui::show_card(&scorecard);
 
         println!("Your Play >> ");
-
-        let mut line = "".to_string();
-        if cfg!(windows) {
-          line = read!("{}\r\n");
-        } else if cfg!(unix) {
-          line = read!("{}\n");
-        }
+        let line = read_line();
 
         let point_result = scorecard.get_points(&line, &hand, false);
         match point_result {
