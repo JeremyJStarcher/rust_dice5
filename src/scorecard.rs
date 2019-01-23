@@ -110,6 +110,23 @@ impl ScoreCardData {
         }
     }
 
+    pub fn get_points(
+        &mut self,
+        short_name: &String,
+        hand: &dice::Dice,
+        yahtzee_bonus: bool,
+    ) -> Result<i16, SetError> {
+        let line = self.line.iter_mut().find(|l| l.short_name == *short_name);
+
+        match line {
+            None => Err(SetError::NotFound),
+            Some(l) => match l.value {
+                None => Ok((l.calc)(&hand, yahtzee_bonus)),
+                _ => Err(SetError::AlreadySet),
+            },
+        }
+    }
+
     pub fn game_over(&mut self) -> bool {
         !self.line.iter().any(|l| l.value == None)
     }
@@ -267,6 +284,27 @@ mod tests {
             }
             Ok(_) => {
                 panic!("Value Set shouldn't happen");
+            }
+        }
+    }
+
+    #[test]
+    fn get_points() {
+        let mut scorecard = get_new_scorecard_data();
+        let line = scorecard.by_id(L::Chance);
+        let dice = dice::Dice::first_roll();
+
+        let result = scorecard.get_points(&line.short_name.clone(), &dice, false);
+
+        match result {
+            Err(SErr::NotFound) => {
+                panic!("Not found shouldn't happen");
+            }
+            Err(SErr::AlreadySet) => {
+                panic!("Already Set shoudln't happen");
+            }
+            Ok(points) => {
+                assert_ne!(points, 0);
             }
         }
     }
