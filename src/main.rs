@@ -27,12 +27,8 @@ fn main() {
 
         let point_result = scorecard.get_points(&line, &hand, false);
         match point_result {
-            Err(SErr::NotFound) => {
-                println!("I have no idea what this means: {}.", line);
-            }
-            Err(SErr::AlreadySet) => {
-                println!("A value for {} has already been set.", line);
-            }
+            Err(SErr::NotFound) => println!("I have no idea what this means: {}.", line),
+            Err(SErr::AlreadySet) => println!("A value for {} has already been set.", line),
             Ok(points) => match scorecard.set_val(&line, points) {
                 _ => {}
             },
