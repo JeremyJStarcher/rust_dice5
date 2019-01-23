@@ -22,10 +22,10 @@ fn main() {
         let point_result = scorecard.get_points(&line, &hand, false);
         match point_result {
             Err(SErr::NotFound) => {
-                panic!("Not found shouldn't happen");
+                println!("I have no idea what this means: {}.", line);
             }
             Err(SErr::AlreadySet) => {
-                panic!("Already Set shoudln't happen");
+                println!("A value for {} has already been set.", line);
             }
             Ok(points) => match scorecard.set_val(&line, points) {
                 _ => {}
