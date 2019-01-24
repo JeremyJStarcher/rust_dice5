@@ -1,3 +1,14 @@
+/*
+ *  Notes for the Reviewer
+ *
+ * term_painter must be used inside of a print! macro.
+ * It cannot be used inside of write or format any of those wonderful
+ * tools.
+ *
+ * Short version: The Windows console isn't a VT100/ANSI console and so
+ * magick must happen.
+*/
+
 extern crate term_painter;
 
 // use term_painter::Attr::*;
@@ -66,6 +77,18 @@ pub fn show_card(score_card: &scorecard::ScoreCardData) {
 }
 
 pub fn show_hand(hand: &Dice) {
+    fn print_color(s: &str, face: i8) {
+        match face {
+            1 => print!("{}", Red.bg(Black).paint(&s)),
+            2 => print!("{}", Blue.bg(Black).paint(&s)),
+            3 => print!("{}", Yellow.bg(Black).paint(&s)),
+            4 => print!("{}", Cyan.bg(Black).paint(&s)),
+            5 => print!("{}", Green.bg(Black).paint(&s)),
+            6 => print!("{}", White.bg(Black).paint(&s)),
+            _ => print!("{}", Black.bg(White).paint(&s)),
+        }
+    }
+
     const SIX: &[&str] = &[
         "o   o", //
         "o   o", //
@@ -98,11 +121,6 @@ pub fn show_hand(hand: &Dice) {
     ];
     const LINES: usize = 3;
 
-    for _ in 0..hand.dice.len() {
-        print!("+-----+  ");
-    }
-    println!("");
-
     for l in 0..LINES {
         for d in 0..hand.dice.len() {
             let v = hand.dice[d];
@@ -113,16 +131,14 @@ pub fn show_hand(hand: &Dice) {
                 4 => FOUR,
                 5 => FIVE,
                 6 => SIX,
-                _ => panic!("Umknown face"),
+                _ => panic!("Unknown face"),
             };
 
             let s = face[l];
-            print!("|{}|  ", s);
+            print_color(s, v);
+            print!("  ");
         }
         println!("");
-    }
-    for _ in 0..hand.dice.len() {
-        print!("+-----+  ");
     }
     println!("");
     println!("Rolls left: {}", hand.rolls_left);
