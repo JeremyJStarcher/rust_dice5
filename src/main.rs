@@ -1,7 +1,10 @@
 mod calchand;
-mod dice;
+mod hand;
 mod scorecard;
 mod ui;
+
+use hand::Dice;
+use hand::DieFace;
 
 #[macro_use]
 extern crate text_io;
@@ -24,7 +27,7 @@ fn read_line() -> String {
     }
 }
 
-fn play(slot: &str, hand: &dice::Dice, scorecard: &mut scorecard::ScoreCardData) -> bool {
+fn play(slot: &str, hand: &Dice, scorecard: &mut scorecard::ScoreCardData) -> bool {
     use scorecard::SetError as SErr;
 
     let point_result = scorecard.play(&slot, &hand);
@@ -44,7 +47,7 @@ fn play(slot: &str, hand: &dice::Dice, scorecard: &mut scorecard::ScoreCardData)
 
 fn main() {
     let mut scorecard = scorecard::get_new_scorecard_data();
-    let mut hand = dice::Dice::first_roll();
+    let mut hand = Dice::first_roll();
 
     ui::show_card(&scorecard);
     ui::show_hand(&hand);
@@ -60,7 +63,7 @@ fn main() {
                 2 => {
                     let slot = words[1];
                     if play(&slot, &hand, &mut scorecard) {
-                        hand = dice::Dice::first_roll();
+                        hand = Dice::first_roll();
                         ui::show_card(&scorecard);
                         ui::show_hand(&hand);
                     }
@@ -70,8 +73,8 @@ fn main() {
                 }
             },
             "cheat" => {
-                let dice: Vec<dice::DieFace> = vec![6, 6, 6, 6, 6, 6];
-                hand = dice::Dice::roll_fake(dice);
+                let dice: Vec<DieFace> = vec![6, 6, 6, 6, 6, 6];
+                hand = Dice::roll_fake(dice);
                 ui::show_hand(&hand);
             }
             "roll" => match words.len() {
@@ -97,7 +100,7 @@ fn main() {
                             reroll_flags.push(flag);
                         });
 
-                        hand = dice::Dice::reroll_hand(hand, &reroll_flags);
+                        hand = Dice::reroll_hand(hand, &reroll_flags);
 
                         println!("Rock and roll: {:?} {:?}", v1, reroll_flags);
 

@@ -5,7 +5,7 @@ use term_painter::Color::*;
 // use term_painter::{Color, ToStyle};
 use term_painter::ToStyle;
 
-use super::dice;
+use super::hand::Dice;
 use super::scorecard;
 use super::scorecard::LineId;
 
@@ -65,7 +65,7 @@ pub fn show_card(score_card: &scorecard::ScoreCardData) {
     println!("");
 }
 
-pub fn show_hand(hand: &dice::Dice) {
+pub fn show_hand(hand: &Dice) {
     const SIX: &[&str] = &[
         "o   o", //
         "o   o", //

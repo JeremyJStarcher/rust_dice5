@@ -1,5 +1,6 @@
 use super::calchand;
-use super::dice;
+use super::hand;
+use hand::Dice;
 use std::fmt;
 
 #[derive(PartialEq, Eq, Debug)]
@@ -31,7 +32,7 @@ pub struct LineData {
     pub long_name: String,
     pub short_name: String,
     pub value: Option<i16>,
-    pub calc: fn(dice: &dice::Dice, special_dice: bool) -> i16,
+    pub calc: fn(dice: &Dice, special_dice: bool) -> i16,
 }
 
 impl fmt::Display for LineData {
@@ -105,7 +106,7 @@ impl ScoreCardData {
         }
     }
 
-    pub fn play(&mut self, slot: &str, hand: &dice::Dice) -> Result<i16, SetError> {
+    pub fn play(&mut self, slot: &str, hand: &Dice) -> Result<i16, SetError> {
         use calchand;
 
         let already_has_dice5 = self.get_line_by_id(LineId::Dice5).value != None;
@@ -141,7 +142,7 @@ impl ScoreCardData {
     pub fn get_points(
         &mut self,
         short_name: &str,
-        hand: &dice::Dice,
+        hand: &Dice,
         yahtzee_bonus: bool,
     ) -> Result<i16, SetError> {
         let line = self.line.iter_mut().find(|l| l.short_name == *short_name);
@@ -319,7 +320,7 @@ mod tests {
     fn get_points() {
         let mut scorecard = get_new_scorecard_data();
         let line = scorecard.get_line_by_id(L::Chance);
-        let dice = dice::Dice::first_roll();
+        let dice = Dice::first_roll();
 
         let result = scorecard.get_points(&line.short_name.clone(), &dice, false);
 
