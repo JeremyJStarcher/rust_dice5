@@ -125,6 +125,7 @@ pub fn show_hand(hand: &dice::Dice) {
         print!("+-----+  ");
     }
     println!("");
+    println!("Rolls left: {}", hand.rolls_left);
 }
 // pub fn demo() {
 //     struct_sizes();

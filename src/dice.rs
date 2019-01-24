@@ -44,7 +44,7 @@ impl Dice {
     pub fn roll_fake(dice: Vec<DieFace>) -> Self {
         let dice = Self {
             dice,
-            rolls_left: Self::ROLLS_PER_TURN,
+            rolls_left: Self::ROLLS_PER_TURN - 1,
         };
         dice
     }
@@ -56,7 +56,7 @@ impl Dice {
 
         Dice {
             dice,
-            rolls_left: Self::ROLLS_PER_TURN,
+            rolls_left: Self::ROLLS_PER_TURN - 1,
         }
     }
 
@@ -91,7 +91,7 @@ mod tests {
         let hand = Dice::first_roll();
 
         assert_eq!(hand.dice.len(), Dice::NUMBER_OF_DICE);
-        assert_eq!(hand.rolls_left, Dice::ROLLS_PER_TURN);
+        assert_eq!(hand.rolls_left, Dice::ROLLS_PER_TURN - 1);
     }
 
     #[test]
@@ -100,11 +100,11 @@ mod tests {
         let reroll_flags: Vec<bool> = hand.dice.iter().map(|_i| true).collect();
 
         assert_eq!(hand.dice.len(), Dice::NUMBER_OF_DICE);
-        assert_eq!(hand.rolls_left, Dice::ROLLS_PER_TURN);
+        assert_eq!(hand.rolls_left, Dice::ROLLS_PER_TURN - 1);
 
         let hand2 = Dice::reroll_hand(hand, &reroll_flags);
         assert_eq!(hand2.dice.len(), Dice::NUMBER_OF_DICE);
-        assert_eq!(hand2.rolls_left, Dice::ROLLS_PER_TURN - 1);
+        assert_eq!(hand2.rolls_left, Dice::ROLLS_PER_TURN - 2);
     }
 
     #[test]
