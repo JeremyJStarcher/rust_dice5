@@ -73,7 +73,7 @@ fn main() {
                 }
             },
             "cheat" => {
-                let dice: Vec<DieFace> = vec![6, 6, 6, 6, 6, 6];
+                let dice: Vec<DieFace> = vec![6, 6, 6, 6, 6];
                 hand = Dice::roll_fake(dice);
                 ui::show_hand(&hand);
             }
