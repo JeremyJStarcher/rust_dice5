@@ -65,9 +65,33 @@ fn main() {
                     println!("Play in a position, like 'play fh'");
                 }
             },
-            "roll" => {
-                println!("Rock and roll");
-            }
+            "roll" => match words.len() {
+                1 => {
+                    println!("Which die to roll?");
+                }
+                _ => {
+                    let v: Vec<_> = words[1..].iter().collect();
+                    let v1: Vec<usize> =
+                        v.iter().map(|l| (***l).parse().unwrap_or(0) - 1).collect();
+
+                    let mut reroll_flags: Vec<bool> = vec![];
+                    let range = 0..hand.dice.len();
+                    range.for_each(|p| {
+                        let flag = if v1.iter().any(|x| *x == p) {
+                            true
+                        } else {
+                            false
+                        };
+                        reroll_flags.push(flag);
+                    });
+
+                    hand = dice::Dice::reroll_hand(hand, &reroll_flags);
+
+                    println!("Rock and roll: {:?} {:?}", v1, reroll_flags);
+
+                    ui::show_hand(&hand);
+                }
+            },
             _ => {}
         };
     }

@@ -60,7 +60,7 @@ impl Dice {
         }
     }
 
-    pub fn reroll_hand(hand: Self, reroll: Vec<bool>) -> Self {
+    pub fn reroll_hand(hand: Self, reroll: &Vec<bool>) -> Self {
         if hand.dice.len() != reroll.len() {
             panic!("dice.length and re-roll length must match");
         }
@@ -102,7 +102,7 @@ mod tests {
         assert_eq!(hand.dice.len(), Dice::NUMBER_OF_DICE);
         assert_eq!(hand.rolls_left, Dice::ROLLS_PER_TURN);
 
-        let hand2 = Dice::reroll_hand(hand, reroll_flags);
+        let hand2 = Dice::reroll_hand(hand, &reroll_flags);
         assert_eq!(hand2.dice.len(), Dice::NUMBER_OF_DICE);
         assert_eq!(hand2.rolls_left, Dice::ROLLS_PER_TURN - 1);
     }
