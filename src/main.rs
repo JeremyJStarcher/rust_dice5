@@ -16,7 +16,9 @@ fn read_line() -> String {
             panic!("Neither Windows nor Unix? What manner of beast art thou?");
         };
 
-        if line.len() > 0 {
+        let words: Vec<&str> = line.split_whitespace().collect();
+
+        if words.len() > 0 {
             break line;
         }
     }
