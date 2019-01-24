@@ -95,7 +95,7 @@ impl ScoreCardData {
         }
     }
 
-    pub fn set_val(&mut self, short_name: &String, value: i16) -> Result<bool, SetError> {
+    pub fn set_val(&mut self, short_name: &str, value: i16) -> Result<bool, SetError> {
         let line = self.line.iter_mut().find(|l| l.short_name == *short_name);
 
         match line {
@@ -112,7 +112,7 @@ impl ScoreCardData {
 
     pub fn get_points(
         &mut self,
-        short_name: &String,
+        short_name: &str,
         hand: &dice::Dice,
         yahtzee_bonus: bool,
     ) -> Result<i16, SetError> {
