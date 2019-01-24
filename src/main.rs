@@ -26,18 +26,22 @@ fn read_line() -> String {
 
 fn play(slot: &str, hand: &dice::Dice, scorecard: &mut scorecard::ScoreCardData) -> bool {
     use scorecard::SetError as SErr;
-    let point_result = scorecard.get_points(&slot, &hand, false);
+
+    let point_result = scorecard.play(&slot, &hand);
     let mut ret = false;
 
     match point_result {
         Err(SErr::NotFound) => println!("I have no idea what this means: {}.", slot),
         Err(SErr::AlreadySet) => println!("A value for {} has already been set.", slot),
-        Ok(points) => match scorecard.set_val(&slot, points) {
-            _ => ret = true,
-        },
+        Ok(points) => {
+            let line = scorecard.get_line_by_short_name(slot);
+            println!("Played {} points on {}", points, line.long_name);
+            ret = true;
+        }
     }
     ret
 }
+
 fn main() {
     let mut scorecard = scorecard::get_new_scorecard_data();
     let mut hand = dice::Dice::first_roll();
@@ -65,6 +69,11 @@ fn main() {
                     println!("Play in a position, like 'play fh'");
                 }
             },
+            "cheat" => {
+                let dice: Vec<dice::DieFace> = vec![6, 6, 6, 6, 6, 6];
+                hand = dice::Dice::roll_fake(dice);
+                ui::show_hand(&hand);
+            }
             "roll" => match words.len() {
                 1 => {
                     println!("Which die to roll?");

@@ -10,7 +10,7 @@ use super::scorecard;
 use super::scorecard::LineId;
 
 pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
-    let line = score_card.by_id(id);
+    let line = score_card.get_line_by_id(id);
 
     let sname = line.short_name.clone();
     let prefix = "<".to_string();
