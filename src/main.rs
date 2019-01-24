@@ -13,7 +13,7 @@ fn read_line() -> String {
         } else if cfg!(unix) {
             read!("{}\n")
         } else {
-            panic!("No idea what to do with this");
+            panic!("Neither Windows nor Unix? What manner of beast art thou?");
         };
 
         if line.len() > 0 {
