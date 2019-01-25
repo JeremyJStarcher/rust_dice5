@@ -68,7 +68,9 @@ pub struct ScoreCardData {
     pub calc_upper_subtotal: SubtotalData,
     pub calc_upper_bonus: SubtotalData,
     pub calc_upper_total: SubtotalData,
+    pub calc_dice5_bonus: SubtotalData,
     pub calc_lower_subtotal: SubtotalData,
+    pub calc_grand_total: SubtotalData,
     pub bonus_dice5: i8,
 }
 
@@ -193,6 +195,19 @@ fn calc_upper_subtotal(scorecard: &ScoreCardData) -> i16 {
     calc_subtotal(&scorecard, &a)
 }
 
+fn calc_upper_bonus(scorecard: &ScoreCardData) -> i16 {
+    let upper_score = calc_upper_subtotal(scorecard);
+    if upper_score > 63 {
+        35
+    } else {
+        0
+    }
+}
+
+fn calc_upper_total(scorecard: &ScoreCardData) -> i16 {
+    calc_upper_subtotal(scorecard) + calc_upper_bonus(scorecard)
+}
+
 fn calc_lower_subtotal(scorecard: &ScoreCardData) -> i16 {
     let a = [
         LineId::ThreeKind,
@@ -206,18 +221,12 @@ fn calc_lower_subtotal(scorecard: &ScoreCardData) -> i16 {
     calc_subtotal(&scorecard, &a)
 }
 
-
-fn calc_upper_bonus(scorecard: &ScoreCardData) -> i16 {
-    let upper_score = calc_upper_subtotal(scorecard);
-    if upper_score > 63 {
-        35
-    } else {
-        0
-    }
+fn calc_dice5_bonus(scorecard: &ScoreCardData) -> i16 {
+    (scorecard.bonus_dice5 * 100).into()
 }
 
-fn calc_upper_total(scorecard: &ScoreCardData) -> i16 {
-     calc_upper_subtotal(scorecard) + calc_upper_bonus(scorecard)
+fn calc_grand_total(scorecard: &ScoreCardData) -> i16 {
+    calc_upper_subtotal(scorecard) + calc_lower_subtotal(scorecard) + calc_dice5_bonus(scorecard)
 }
 
 pub fn get_new_scorecard_data() -> ScoreCardData {
@@ -315,11 +324,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
         },
     ];
 
-    let s: Vec<SubtotalData> = vec![SubtotalData {
-        long_name: "Subtotal".to_string(),
-        calc: calc_upper_subtotal,
-    }];
-
     ScoreCardData {
         line: z,
         calc_upper_subtotal: SubtotalData {
@@ -337,6 +341,14 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
         calc_lower_subtotal: SubtotalData {
             long_name: "Subtotal".to_string(),
             calc: calc_lower_subtotal,
+        },
+        calc_dice5_bonus: SubtotalData {
+            long_name: "Dice5**".to_string(),
+            calc: calc_dice5_bonus,
+        },
+        calc_grand_total: SubtotalData {
+            long_name: "Grand Total".to_string(),
+            calc: calc_grand_total,
         },
         bonus_dice5: 0,
     }

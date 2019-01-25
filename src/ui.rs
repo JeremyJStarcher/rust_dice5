@@ -95,6 +95,12 @@ pub fn show_card(score_card: &scorecard::ScoreCardData) {
     println!("");
     print_subtotal(&score_card.calc_lower_subtotal, &score_card);
     println!("-------------------------");
+
+    print_subtotal(&score_card.calc_dice5_bonus, &score_card);
+    println!("-------------------------");
+
+    print_subtotal(&score_card.calc_grand_total, &score_card);
+    println!("-------------------------");
 }
 
 pub fn show_hand(hand: &Dice) {
