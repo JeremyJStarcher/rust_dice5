@@ -42,11 +42,10 @@ impl Dice {
 
     #[allow(dead_code)]
     pub fn roll_fake(dice: Vec<DieFace>) -> Self {
-        let dice = Self {
+         Self {
             dice,
             rolls_left: Self::ROLLS_PER_TURN - 1,
-        };
-        dice
+        }
     }
 
     pub fn first_roll() -> Self {
@@ -75,10 +74,10 @@ impl Dice {
             })
             .collect();
 
-        return Self {
+        Self {
             dice,
             rolls_left: hand.rolls_left - 1,
-        };
+        }
     }
 }
 

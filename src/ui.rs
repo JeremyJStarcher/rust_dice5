@@ -123,12 +123,12 @@ pub fn show_hand(hand: &Dice) {
     ];
     const FIVE: &[&str] = &[
         "●   ●", //
-        "  ●  ",   //
+        "  ●  ", //
         "●   ●", //
     ];
     const FOUR: &[&str] = &[
         "●   ●", //
-        "     ",     //
+        "     ", //
         "●   ●", //
     ];
     const THREE: &[&str] = &[
@@ -138,13 +138,13 @@ pub fn show_hand(hand: &Dice) {
     ];
     const TWO: &[&str] = &[
         "●    ", //
-        "     ",   //
+        "     ", //
         "    ●", //
     ];
     const ONE: &[&str] = &[
-        "     ",   //
+        "     ", //
         "  ●  ", //
-        "     ",   //
+        "     ", //
     ];
     const LINES: usize = 3;
 

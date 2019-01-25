@@ -8,14 +8,11 @@ const VALUE_FULL_HOUSE: i16 = 25;
 const VALUE_DICE5: i16 = 50;
 
 fn sum_faces(hand: &Dice, face: DieFace) -> i16 {
-    let sum = hand.dice.iter().filter(|x| **x == face).sum::<DieFace>();
-    sum as i16
+    i16::from(hand.dice.iter().filter(|x| **x == face).sum::<DieFace>())
 }
 
 fn sort_faces(hand: &Dice) -> Vec<usize> {
-    let range = 1..hand::Dice::NUMBER_OF_DICE + 2;
-
-    let r: Vec<usize> = range
+    (1..hand::Dice::NUMBER_OF_DICE + 2)
         .map(|face| {
             let face_count: Vec<&i8> = hand
                 .dice
@@ -24,8 +21,7 @@ fn sort_faces(hand: &Dice) -> Vec<usize> {
                 .collect();
             face_count.len()
         })
-        .collect();
-    r
+        .collect()
 }
 
 pub fn hand_to_string(hand: &Dice) -> String {

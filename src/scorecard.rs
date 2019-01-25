@@ -182,8 +182,7 @@ fn calc_subtotal(scorecard: &ScoreCardData, a: &[LineId]) -> i16 {
         .map(|line_id| scorecard.get_line_by_id(line_id).value.unwrap_or(0))
         .collect();
 
-    let sum = vals.iter().fold(0, |a, &b| a + b);
-    sum
+    vals.iter().fold(0, |a, &b| a + b)
 }
 
 fn calc_upper_subtotal(scorecard: &ScoreCardData) -> i16 {
