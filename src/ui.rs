@@ -93,6 +93,8 @@ pub fn show_card(score_card: &scorecard::ScoreCardData) {
     println!("");
     print_line(score_card, LineId::Dice5);
     println!("");
+    print_subtotal(&score_card.calc_lower_subtotal, &score_card);
+    println!("-------------------------");
 }
 
 pub fn show_hand(hand: &Dice) {

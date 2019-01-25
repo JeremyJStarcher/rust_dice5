@@ -68,6 +68,7 @@ pub struct ScoreCardData {
     pub calc_upper_subtotal: SubtotalData,
     pub calc_upper_bonus: SubtotalData,
     pub calc_upper_total: SubtotalData,
+    pub calc_lower_subtotal: SubtotalData,
     pub bonus_dice5: i8,
 }
 
@@ -170,6 +171,16 @@ impl ScoreCardData {
     }
 }
 
+fn calc_subtotal(scorecard: &ScoreCardData, a: &[LineId]) -> i16 {
+    let vals: Vec<_> = a
+        .iter()
+        .map(|line_id| scorecard.get_line_by_id(line_id).value.unwrap_or(0))
+        .collect();
+
+    let sum = vals.iter().fold(0, |a, &b| a + b);
+    sum
+}
+
 fn calc_upper_subtotal(scorecard: &ScoreCardData) -> i16 {
     let a = [
         LineId::Ace,
@@ -179,14 +190,22 @@ fn calc_upper_subtotal(scorecard: &ScoreCardData) -> i16 {
         LineId::Five,
         LineId::Six,
     ];
-    let vals: Vec<_> = a
-        .iter()
-        .map(|line_id| scorecard.get_line_by_id(line_id).value.unwrap_or(0))
-        .collect();
-
-    let sum = vals.iter().fold(0, |a, &b| a + b);
-    sum
+    calc_subtotal(&scorecard, &a)
 }
+
+fn calc_lower_subtotal(scorecard: &ScoreCardData) -> i16 {
+    let a = [
+        LineId::ThreeKind,
+        LineId::FourKind,
+        LineId::SmallStraight,
+        LineId::LargeStraight,
+        LineId::FullHouse,
+        LineId::Chance,
+        LineId::Dice5,
+    ];
+    calc_subtotal(&scorecard, &a)
+}
+
 
 fn calc_upper_bonus(scorecard: &ScoreCardData) -> i16 {
     let upper_score = calc_upper_subtotal(scorecard);
@@ -314,6 +333,10 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
         calc_upper_total: SubtotalData {
             long_name: "Upper Total".to_string(),
             calc: calc_upper_total,
+        },
+        calc_lower_subtotal: SubtotalData {
+            long_name: "Subtotal".to_string(),
+            calc: calc_lower_subtotal,
         },
         bonus_dice5: 0,
     }
