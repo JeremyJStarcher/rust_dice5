@@ -74,9 +74,10 @@ pub fn show_card(score_card: &scorecard::ScoreCardData) {
     println!("");
     print_line(score_card, LineId::Six);
     println!("");
-    println!("-------------------------");
     print_subtotal(&score_card.calc_upper_subtotal, &score_card);
     print_subtotal(&score_card.calc_upper_bonus, &score_card);
+    print_subtotal(&score_card.calc_upper_total, &score_card);
+    println!("-------------------------");
 
     print_line(score_card, LineId::ThreeKind);
     println!("");

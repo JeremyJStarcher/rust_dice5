@@ -67,6 +67,7 @@ pub struct ScoreCardData {
     pub line: Vec<LineData>,
     pub calc_upper_subtotal: SubtotalData,
     pub calc_upper_bonus: SubtotalData,
+    pub calc_upper_total: SubtotalData,
     pub bonus_dice5: i8,
 }
 
@@ -196,6 +197,10 @@ fn calc_upper_bonus(scorecard: &ScoreCardData) -> i16 {
     }
 }
 
+fn calc_upper_total(scorecard: &ScoreCardData) -> i16 {
+     calc_upper_subtotal(scorecard) + calc_upper_bonus(scorecard)
+}
+
 pub fn get_new_scorecard_data() -> ScoreCardData {
     let z: Vec<LineData> = vec![
         LineData {
@@ -305,6 +310,10 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
         calc_upper_bonus: SubtotalData {
             long_name: "Upper Bonus".to_string(),
             calc: calc_upper_bonus,
+        },
+        calc_upper_total: SubtotalData {
+            long_name: "Upper Total".to_string(),
+            calc: calc_upper_total,
         },
         bonus_dice5: 0,
     }
