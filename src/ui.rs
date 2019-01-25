@@ -21,7 +21,7 @@ use super::scorecard;
 use super::scorecard::LineId;
 
 pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
-    let line = score_card.get_line_by_id(id);
+    let line = score_card.get_line_by_id(&id);
 
     let sname = line.short_name.clone();
     let prefix = "<".to_string();
@@ -46,6 +46,21 @@ pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
     }
 }
 
+pub fn print_subtotal(line: &scorecard::SubtotalData, score_card: &scorecard::ScoreCardData) {
+    let val = (line.calc)(&score_card);
+
+    print!(
+        "{:width$}",
+        White.bg(Black).paint(&line.long_name),
+        width = 15,
+    );
+
+    print!("  ");
+
+    print!("{:width$}", Cyan.bg(Black).bold().paint(&val), width = 5,);
+    println!("");
+}
+
 pub fn show_card(score_card: &scorecard::ScoreCardData) {
     print_line(score_card, LineId::Ace);
     println!("");
@@ -60,6 +75,8 @@ pub fn show_card(score_card: &scorecard::ScoreCardData) {
     print_line(score_card, LineId::Six);
     println!("");
     println!("-------------------------");
+    print_subtotal(&score_card.calc_upper_hand, &score_card);
+
     print_line(score_card, LineId::ThreeKind);
     println!("");
     print_line(score_card, LineId::FourKind);
@@ -96,12 +113,12 @@ pub fn show_hand(hand: &Dice) {
     ];
     const FIVE: &[&str] = &[
         "●   ●", //
-        "  ●  ", //
+        "  ●  ",   //
         "●   ●", //
     ];
     const FOUR: &[&str] = &[
         "●   ●", //
-        "     ", //
+        "     ",     //
         "●   ●", //
     ];
     const THREE: &[&str] = &[
@@ -111,13 +128,13 @@ pub fn show_hand(hand: &Dice) {
     ];
     const TWO: &[&str] = &[
         "●    ", //
-        "     ", //
+        "     ",   //
         "    ●", //
     ];
     const ONE: &[&str] = &[
-        "     ", //
+        "     ",   //
         "  ●  ", //
-        "     ", //
+        "     ",   //
     ];
     const LINES: usize = 3;
 
