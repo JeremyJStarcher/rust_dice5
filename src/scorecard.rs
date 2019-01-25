@@ -130,6 +130,9 @@ impl ScoreCardData {
         if point_result.is_ok() {
             let points = point_result.unwrap();
             self.set_val(&slot, points)?;
+            if special_handling {
+                self.bonus_dice5 += 1;
+            }
             Ok(points)
         } else {
             Err(point_result.unwrap_err())
@@ -222,7 +225,7 @@ fn calc_lower_subtotal(scorecard: &ScoreCardData) -> i16 {
 }
 
 fn calc_dice5_bonus(scorecard: &ScoreCardData) -> i16 {
-    (scorecard.bonus_dice5 * 100).into()
+    i16::from(scorecard.bonus_dice5) * 100
 }
 
 fn calc_grand_total(scorecard: &ScoreCardData) -> i16 {
