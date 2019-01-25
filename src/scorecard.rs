@@ -66,6 +66,7 @@ impl fmt::Display for LineData {
 pub struct ScoreCardData {
     pub line: Vec<LineData>,
     pub calc_upper_hand: SubtotalData,
+    pub calc_upper_bonus: SubtotalData,
     pub bonus_dice5: i8,
 }
 
@@ -185,6 +186,14 @@ fn calc_upper_hand(scorecard: &ScoreCardData) -> i16 {
     let sum = vals.iter().fold(0, |a, &b| a + b);
     sum
 }
+fn calc_upper_bonus(scorecard: &ScoreCardData) -> i16 {
+    let upper_score = calc_upper_hand(scorecard);
+    if upper_score > 63 {
+        35
+    } else {
+        0
+    }
+}
 
 pub fn get_new_scorecard_data() -> ScoreCardData {
     let z: Vec<LineData> = vec![
@@ -291,6 +300,10 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
         calc_upper_hand: SubtotalData {
             long_name: "Subtotal".to_string(),
             calc: calc_upper_hand,
+        },
+        calc_upper_bonus: SubtotalData {
+            long_name: "Upper Bonus".to_string(),
+            calc: calc_upper_bonus,
         },
         bonus_dice5: 0,
     }
