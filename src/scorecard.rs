@@ -199,7 +199,7 @@ fn calc_upper_subtotal(scorecard: &ScoreCardData) -> i16 {
 
 fn calc_upper_bonus(scorecard: &ScoreCardData) -> i16 {
     let upper_score = calc_upper_subtotal(scorecard);
-    if upper_score > 63 {
+    if upper_score >= 63 {
         35
     } else {
         0
