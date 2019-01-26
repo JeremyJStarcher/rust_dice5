@@ -12,7 +12,7 @@ pub struct Dice {
 
 impl fmt::Display for Dice {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let codes: Vec<String> = self
+        let codes: Vec<_> = self
             .dice
             .iter()
             .map(|k| match k {
@@ -49,7 +49,7 @@ impl Dice {
     }
 
     pub fn first_roll() -> Self {
-        let dice: Vec<DieFace> = (0..Self::NUMBER_OF_DICE)
+        let dice: Vec<_> = (0..Self::NUMBER_OF_DICE)
             .map(|_i| Self::roll_die())
             .collect();
 
@@ -64,7 +64,7 @@ impl Dice {
             panic!("dice.length and re-roll length must match");
         }
 
-        let dice: Vec<DieFace> = hand
+        let dice: Vec<_> = hand
             .dice
             .iter()
             .zip(reroll)

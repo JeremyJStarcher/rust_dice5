@@ -26,7 +26,7 @@ fn sort_faces(hand: &Dice) -> Vec<usize> {
 
 pub fn hand_to_string(hand: &Dice) -> String {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_one: Vec<String> = faces_count
+    let piles_of_at_least_one: Vec<_> = faces_count
         .iter()
         .map(|&f| match f >= 1 {
             true => "+".to_string(),
@@ -43,7 +43,7 @@ fn sum_all_dice(hand: &Dice) -> i16 {
 
 pub fn is_dice5(hand: &Dice) -> bool {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_five: Vec<&usize> = faces_count.iter().filter(|&f| *f >= 5).collect();
+    let piles_of_at_least_five: Vec<_> = faces_count.iter().filter(|&f| *f >= 5).collect();
     piles_of_at_least_five.len() >= 1
 }
 
@@ -73,7 +73,7 @@ pub fn calc_six(hand: &Dice, _special_dice5: bool) -> i16 {
 
 pub fn calc_3k(hand: &Dice, _special_dice5: bool) -> i16 {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_three: Vec<&usize> = faces_count.iter().filter(|&f| *f >= 3).collect();
+    let piles_of_at_least_three: Vec<_> = faces_count.iter().filter(|&f| *f >= 3).collect();
     match piles_of_at_least_three.len() >= 1 {
         true => sum_all_dice(hand),
         false => 0,
@@ -82,7 +82,7 @@ pub fn calc_3k(hand: &Dice, _special_dice5: bool) -> i16 {
 
 pub fn calc_4k(hand: &Dice, _special_dice5: bool) -> i16 {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_four: Vec<&usize> = faces_count.iter().filter(|&f| *f >= 4).collect();
+    let piles_of_at_least_four: Vec<_> = faces_count.iter().filter(|&f| *f >= 4).collect();
     match piles_of_at_least_four.len() >= 1 {
         true => sum_all_dice(hand),
         false => 0,
@@ -140,8 +140,8 @@ pub fn calc_fh(hand: &Dice, special_dice5: bool) -> i16 {
     }
 
     let faces_count = sort_faces(hand);
-    let piles_of_at_exactly_3: Vec<&usize> = faces_count.iter().filter(|&f| *f == 3).collect();
-    let piles_of_at_exactly_2: Vec<&usize> = faces_count.iter().filter(|&f| *f == 2).collect();
+    let piles_of_at_exactly_3: Vec<_> = faces_count.iter().filter(|&f| *f == 3).collect();
+    let piles_of_at_exactly_2: Vec<_> = faces_count.iter().filter(|&f| *f == 2).collect();
 
     match piles_of_at_exactly_3.len() >= 1 && piles_of_at_exactly_2.len() >= 1 {
         true => VALUE_FULL_HOUSE,

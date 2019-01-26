@@ -19,7 +19,7 @@ fn read_line() -> String {
             panic!("Neither Windows nor Unix? What manner of beast art thou?");
         };
 
-        let words: Vec<&str> = line.split_whitespace().collect();
+        let words: Vec<_> = line.split_whitespace().collect();
 
         if words.len() > 0 {
             break line;
@@ -56,7 +56,7 @@ fn main() {
         println!("Your turn.  'play', 'roll' or 'cheat' >> ");
 
         let line = read_line();
-        let words: Vec<&str> = line.split_whitespace().collect();
+        let words: Vec<_> = line.split_whitespace().collect();
 
         match words[0] {
             "play" => match words.len() {
@@ -86,10 +86,10 @@ fn main() {
                         println!("No rolls left");
                     } else {
                         let v: Vec<_> = words[1..].iter().collect();
-                        let v1: Vec<usize> =
+                        let v1: Vec<_> =
                             v.iter().map(|l| (***l).parse().unwrap_or(0) - 1).collect();
 
-                        let mut reroll_flags: Vec<bool> = vec![];
+                        let mut reroll_flags: Vec<_> = vec![];
                         let range = 0..hand.dice.len();
                         range.for_each(|p| {
                             let flag = if v1.iter().any(|x| *x == p) {

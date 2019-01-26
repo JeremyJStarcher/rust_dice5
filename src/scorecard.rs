@@ -76,7 +76,7 @@ pub struct ScoreCardData {
 
 impl fmt::Display for ScoreCardData {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let out: Vec<String> = vec![
+        let out: Vec<_> = vec![
             format!("{}", self.get_line_by_id(&LineId::Ace)),
             format!("{}", self.get_line_by_id(&LineId::Two)),
             format!("{}", self.get_line_by_id(&LineId::Three)),
@@ -232,7 +232,7 @@ fn calc_grand_total(scorecard: &ScoreCardData) -> i16 {
 }
 
 pub fn get_new_scorecard_data() -> ScoreCardData {
-    let z: Vec<LineData> = vec![
+    let z = vec![
         LineData {
             id: LineId::Ace,
             long_name: "Aces".to_string(),

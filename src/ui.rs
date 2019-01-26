@@ -16,8 +16,8 @@ use term_painter::Color::*;
 // use term_painter::{Color, ToStyle};
 use term_painter::ToStyle;
 
-use super::hand::DieFace;
 use super::hand::Dice;
+use super::hand::DieFace;
 use super::scorecard;
 use super::scorecard::LineId;
 
