@@ -26,6 +26,7 @@ const SCORE_BOX_WIDTH: usize = 5;
 pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
     let line = score_card.get_line_by_id(&id);
 
+    // HELP: How to get rid of the clone?
     let sname = line.short_name.clone();
     let prefix = "<".to_string();
     let suffix = ">".to_string();
