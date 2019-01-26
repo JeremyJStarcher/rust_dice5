@@ -53,7 +53,7 @@ fn main() {
     ui::show_hand(&hand);
 
     while !scorecard.game_over() {
-        println!("Your turn.  'play' or 'roll' >> ");
+        println!("Your turn.  'play', 'roll' or 'cheat' >> ");
 
         let line = read_line();
         let words: Vec<&str> = line.split_whitespace().collect();
