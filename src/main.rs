@@ -85,24 +85,19 @@ fn main() {
                     if hand.rolls_left == 0 {
                         println!("No rolls left");
                     } else {
-                        let v: Vec<_> = words[1..].iter().collect();
-                        let v1: Vec<_> =
-                            v.iter().map(|l| (***l).parse().unwrap_or(0) - 1).collect();
+                        let position_to_reroll: Vec<_> = words[1..].iter().collect();
+                        let position_to_reroll: Vec<_> = position_to_reroll
+                            .iter()
+                            .map(|l| (***l).parse().unwrap_or(0) - 1)
+                            .collect();
 
-                        let mut reroll_flags: Vec<_> = vec![];
                         let range = 0..hand.dice.len();
-                        range.for_each(|p| {
-                            let flag = if v1.iter().any(|x| *x == p) {
-                                true
-                            } else {
-                                false
-                            };
-                            reroll_flags.push(flag);
-                        });
+
+                        let reroll_flags: Vec<_> = range
+                            .map(|p| position_to_reroll.iter().any(|&x| x == p))
+                            .collect();
 
                         hand = Dice::reroll_hand(hand, &reroll_flags);
-
-                        println!("Rock and roll: {:?} {:?}", v1, reroll_flags);
 
                         ui::show_hand(&hand);
                     }
