@@ -42,7 +42,7 @@ impl Dice {
 
     #[allow(dead_code)]
     pub fn roll_fake(dice: Vec<DieFace>) -> Self {
-         Self {
+        Self {
             dice,
             rolls_left: Self::ROLLS_PER_TURN - 1,
         }
