@@ -20,6 +20,9 @@ use super::hand::Dice;
 use super::scorecard;
 use super::scorecard::LineId;
 
+const LONG_NAME_WIDTH: usize = 15;
+const SCORE_BOX_WIDTH: usize = 5;
+
 pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
     let line = score_card.get_line_by_id(&id);
 
@@ -35,14 +38,22 @@ pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
     print!(
         "{:width$}",
         White.bg(Black).paint(&line.long_name),
-        width = 15,
+        width = LONG_NAME_WIDTH,
     );
 
     print!("  ");
 
     match line.value {
-        None => print!("{:width$}", Yellow.bg(Black).bold().paint(&val), width = 5,),
-        _ => print!("{:>width$}", Cyan.bg(Black).bold().paint(&val), width = 5,),
+        None => print!(
+            "{:width$}",
+            Yellow.bg(Black).bold().paint(&val),
+            width = SCORE_BOX_WIDTH,
+        ),
+        _ => print!(
+            "{:>width$}",
+            Cyan.bg(Black).bold().paint(&val),
+            width = SCORE_BOX_WIDTH,
+        ),
     }
 }
 
@@ -52,12 +63,16 @@ pub fn print_subtotal(line: &scorecard::SubtotalData, score_card: &scorecard::Sc
     print!(
         "{:width$}",
         White.bg(Black).paint(&line.long_name),
-        width = 15,
+        width = LONG_NAME_WIDTH,
     );
 
     print!("  ");
 
-    print!("{:width$}", Cyan.bg(Black).bold().paint(&val), width = 5,);
+    print!(
+        "{:width$}",
+        Cyan.bg(Black).bold().paint(&val),
+        width = SCORE_BOX_WIDTH,
+    );
     println!("");
 }
 
