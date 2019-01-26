@@ -79,7 +79,8 @@ fn main() {
             }
             "roll" => match words.len() {
                 1 => {
-                    println!("Which die to roll?");
+                    println!("Which die positions to roll?");
+                    println!("Example 'roll 1 2 3' to re-roll the first three dice.");
                 }
                 _ => {
                     if hand.rolls_left == 0 {
