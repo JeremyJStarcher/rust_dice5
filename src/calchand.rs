@@ -14,7 +14,7 @@ fn sum_faces(hand: &Dice, face: DieFace) -> i16 {
 fn sort_faces(hand: &Dice) -> Vec<usize> {
     (1..hand::Dice::NUMBER_OF_DICE + 2)
         .map(|face| {
-            let face_count: Vec<&i8> = hand
+            let face_count: Vec<&DieFace> = hand
                 .dice
                 .iter()
                 .filter(|f| **f == face as DieFace)

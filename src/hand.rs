@@ -37,7 +37,7 @@ impl Dice {
 
     pub fn roll_die() -> DieFace {
         let mut rng = rand::thread_rng();
-        rng.gen_range(0, Self::NUMBER_OF_FACES) + 1
+        (rng.gen_range(0, Self::NUMBER_OF_FACES) + 1).into()
     }
 
     #[allow(dead_code)]

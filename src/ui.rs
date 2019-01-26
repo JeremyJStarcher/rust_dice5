@@ -16,6 +16,7 @@ use term_painter::Color::*;
 // use term_painter::{Color, ToStyle};
 use term_painter::ToStyle;
 
+use super::hand::DieFace;
 use super::hand::Dice;
 use super::scorecard;
 use super::scorecard::LineId;
@@ -120,7 +121,7 @@ pub fn show_card(score_card: &scorecard::ScoreCardData) {
 }
 
 pub fn show_hand(hand: &Dice) {
-    fn print_color(s: &str, face: i8) {
+    fn print_color(s: &str, face: DieFace) {
         match face {
             1 => print!("{}", Red.bg(Black).paint(&s)),
             2 => print!("{}", Magenta.bg(Black).paint(&s)),
