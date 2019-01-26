@@ -130,7 +130,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust_yahtzee"
+name = "rust_dice5"
 version = "0.1.0"
 dependencies = [
  "rand 0.6.4 (registry+https://github.com/rust-lang/crates.io-index)",

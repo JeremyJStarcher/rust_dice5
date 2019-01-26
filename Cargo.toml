@@ -1,5 +1,5 @@
 [package]
-name = "rust_yahtzee"
+name = "rust_dice5"
 version = "0.1.0"
 authors = ["Jeremy J Starcher"]
 edition = "2018"

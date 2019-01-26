@@ -158,14 +158,14 @@ impl ScoreCardData {
         &mut self,
         short_name: &str,
         hand: &Dice,
-        yahtzee_bonus: bool,
+        dice5_bonus: bool,
     ) -> Result<i16, SetError> {
         let line = self.line.iter_mut().find(|l| l.short_name == *short_name);
 
         match line {
             None => Err(SetError::NotFound),
             Some(l) => match l.value {
-                None => Ok((l.calc)(&hand, yahtzee_bonus)),
+                None => Ok((l.calc)(&hand, dice5_bonus)),
                 _ => Err(SetError::AlreadySet),
             },
         }
@@ -320,7 +320,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
         LineData {
             id: LineId::Dice5,
             long_name: "Dice 5".to_string(),
-            short_name: "y".to_string(),
+            short_name: "d".to_string(),
             value: None,
             calc: calchand::calc_dice5,
         },
