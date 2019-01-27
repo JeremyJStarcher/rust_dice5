@@ -3,26 +3,22 @@ mod hand;
 mod scorecard;
 mod ui;
 
+use std::io;
 use hand::Dice;
 use hand::DieFace;
 
 #[macro_use]
 extern crate text_io;
 
-fn read_line() -> String {
+fn read_command() -> Vec<String> {
+    let mut input = String::new();
+    
     loop {
-        let line: String = if cfg!(windows) {
-            read!("{}\r\n")
-        } else if cfg!(unix) {
-            read!("{}\n")
-        } else {
-            panic!("Neither Windows nor Unix? What manner of beast art thou?");
-        };
+        io::stdin().read_line(&mut input).expect("Unable to read stdin");
 
-        let words: Vec<_> = line.split_whitespace().collect();
-
+        let words: Vec<_> = input.split_whitespace().cloned().collect();
         if words.len() > 0 {
-            break line;
+            return words;
         }
     }
 }
@@ -55,8 +51,7 @@ fn main() {
     while !scorecard.game_over() {
         println!("Your turn.  'play', 'roll' or 'cheat' >> ");
 
-        let line = read_line();
-        let words: Vec<_> = line.split_whitespace().collect();
+        let words = read_command();
 
         match words[0] {
             "play" => match words.len() {
