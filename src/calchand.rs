@@ -11,14 +11,7 @@ fn sum_faces(hand: &Dice, face: DieFace) -> i16 {
 
 fn sort_faces(hand: &Dice) -> Vec<usize> {
     (1..Dice::NUMBER_OF_DICE + 2)
-        .map(|face| {
-            let face_count: Vec<&DieFace> = hand
-                .dice
-                .iter()
-                .filter(|f| **f == face as DieFace)
-                .collect();
-            face_count.len()
-        })
+        .map(|face| hand.dice.iter().filter(|f| **f == face as DieFace).count())
         .collect()
 }
 
@@ -26,13 +19,7 @@ pub fn hand_to_string(hand: &Dice) -> String {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_one: Vec<_> = faces_count
         .iter()
-        .map(|&f| {
-            if f >= 1 {
-                "+".to_string()
-            } else {
-                "-".to_string()
-            }
-        })
+        .map(|&f| if f >= 1 { "+" } else { "-" })
         .collect();
 
     piles_of_at_least_one.join("")
@@ -44,8 +31,8 @@ fn sum_all_dice(hand: &Dice) -> i16 {
 
 pub fn is_dice5(hand: &Dice) -> bool {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_five: Vec<_> = faces_count.iter().filter(|&f| *f >= 5).collect();
-    !piles_of_at_least_five.is_empty()
+    let piles_of_at_least_five = faces_count.iter().any(|&f| f >= 5);
+    piles_of_at_least_five
 }
 
 pub fn calc_ace(hand: &Dice, _special_dice5: bool) -> i16 {
@@ -74,8 +61,8 @@ pub fn calc_six(hand: &Dice, _special_dice5: bool) -> i16 {
 
 pub fn calc_3k(hand: &Dice, _special_dice5: bool) -> i16 {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_three: Vec<_> = faces_count.iter().filter(|&f| *f >= 3).collect();
-    if !piles_of_at_least_three.is_empty() {
+    let piles_of_at_least_three = faces_count.iter().any(|&f| f >= 3);
+    if piles_of_at_least_three {
         sum_all_dice(hand)
     } else {
         0
@@ -84,8 +71,8 @@ pub fn calc_3k(hand: &Dice, _special_dice5: bool) -> i16 {
 
 pub fn calc_4k(hand: &Dice, _special_dice5: bool) -> i16 {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_four: Vec<_> = faces_count.iter().filter(|&f| *f >= 4).collect();
-    if !piles_of_at_least_four.is_empty() {
+    let piles_of_at_least_four = faces_count.iter().any(|&f| f >= 4);
+    if piles_of_at_least_four {
         sum_all_dice(hand)
     } else {
         0
@@ -146,10 +133,10 @@ pub fn calc_fh(hand: &Dice, special_dice5: bool) -> i16 {
     }
 
     let faces_count = sort_faces(hand);
-    let piles_of_at_exactly_3: Vec<_> = faces_count.iter().filter(|&f| *f == 3).collect();
-    let piles_of_at_exactly_2: Vec<_> = faces_count.iter().filter(|&f| *f == 2).collect();
+    let piles_of_at_exactly_3 = faces_count.iter().any(|&f| f == 3);
+    let piles_of_at_exactly_2 = faces_count.iter().any(|&f| f == 2);
 
-    if !piles_of_at_exactly_3.is_empty() && !piles_of_at_exactly_2.is_empty() {
+    if piles_of_at_exactly_3 && piles_of_at_exactly_2 {
         VALUE_FULL_HOUSE
     } else {
         0
