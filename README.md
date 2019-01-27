@@ -2,6 +2,11 @@
 
 Dice5 is a clone of the popular Yahtzee&trade; game.
 
+```
+rustc --version
+rustc 1.32.0 (9fda7c223 2019-01-16)
+```
+
 ## About
 This version _mostly_ follows the 1967 rules.
 
