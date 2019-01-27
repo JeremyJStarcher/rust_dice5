@@ -3,8 +3,7 @@ mod hand;
 mod scorecard;
 mod ui;
 
-use hand::Dice;
-use hand::DieFace;
+use crate::hand::{Dice, DieFace};
 
 #[macro_use]
 extern crate text_io;
@@ -28,7 +27,7 @@ fn read_line() -> String {
 }
 
 fn play(slot: &str, hand: &Dice, scorecard: &mut scorecard::ScoreCardData) -> bool {
-    use scorecard::SetError as SErr;
+    use crate::scorecard::SetError as SErr;
 
     let point_result = scorecard.play(&slot, &hand);
     let mut ret = false;

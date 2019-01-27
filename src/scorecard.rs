@@ -1,6 +1,5 @@
 use super::calchand;
-use super::hand;
-use hand::Dice;
+use crate::hand::Dice;
 use std::fmt;
 
 #[derive(PartialEq, Eq, Debug)]
@@ -119,7 +118,7 @@ impl ScoreCardData {
     }
 
     pub fn play(&mut self, slot: &str, hand: &Dice) -> Result<i16, SetError> {
-        use calchand;
+        use crate::calchand;
 
         let already_has_dice5 = self.get_line_by_id(&LineId::Dice5).value != None;
         let is_dice5 = calchand::is_dice5(hand);

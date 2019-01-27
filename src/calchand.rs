@@ -1,6 +1,4 @@
-use super::hand;
-use super::hand::Dice;
-use super::hand::DieFace;
+use crate::hand::{Dice, DieFace};
 
 const VALUE_SMALL_STRAIGHT: i16 = 30;
 const VALUE_LARGE_STRAIGHT: i16 = 40;
@@ -12,7 +10,7 @@ fn sum_faces(hand: &Dice, face: DieFace) -> i16 {
 }
 
 fn sort_faces(hand: &Dice) -> Vec<usize> {
-    (1..hand::Dice::NUMBER_OF_DICE + 2)
+    (1..Dice::NUMBER_OF_DICE + 2)
         .map(|face| {
             let face_count: Vec<&DieFace> = hand
                 .dice
@@ -155,9 +153,9 @@ pub fn calc_chance(hand: &Dice, _special_dice5: bool) -> i16 {
 
 #[cfg(test)]
 mod tests {
-    use super::super::scorecard;
     use super::*;
-    use scorecard::LineId as L;
+    use crate::scorecard;
+    use crate::scorecard::LineId as L;
 
     #[test]
     fn test_ace_all_aces() {
