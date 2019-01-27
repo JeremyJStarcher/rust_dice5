@@ -16,10 +16,9 @@ use term_painter::Color::*;
 // use term_painter::{Color, ToStyle};
 use term_painter::ToStyle;
 
-use super::hand::Dice;
-use super::hand::DieFace;
-use super::scorecard;
-use super::scorecard::LineId;
+use crate::hand::{Dice, DieFace};
+use crate::scorecard;
+use crate::scorecard::LineId;
 
 const LONG_NAME_WIDTH: usize = 15;
 const SCORE_BOX_WIDTH: usize = 5;

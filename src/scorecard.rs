@@ -1,4 +1,4 @@
-use super::calchand;
+use crate::calchand;
 use crate::hand::Dice;
 use std::fmt;
 

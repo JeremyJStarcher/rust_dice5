@@ -83,7 +83,7 @@ impl Dice {
 
 #[cfg(test)]
 mod tests {
-    use super::Dice;
+    use super::*;
 
     #[test]
     fn first_roll_correct_number_of_dice() {
