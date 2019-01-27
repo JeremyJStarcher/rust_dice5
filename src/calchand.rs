@@ -26,23 +26,20 @@ pub fn hand_to_string(hand: &Dice) -> String {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_one: Vec<_> = faces_count
         .iter()
-        .map(|&f| match f >= 1 {
-            true => "+".to_string(),
-            false => "-".to_string(),
-        })
+        .map(|&f| String::from(if f >= 1 { "+" } else { "-" }))
         .collect();
 
     piles_of_at_least_one.join("")
 }
 
 fn sum_all_dice(hand: &Dice) -> i16 {
-    hand.dice.iter().map(|&f| f as i16).sum()
+    hand.dice.iter().map(|&f| i16::from(f)).sum()
 }
 
 pub fn is_dice5(hand: &Dice) -> bool {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_five: Vec<_> = faces_count.iter().filter(|&f| *f >= 5).collect();
-    piles_of_at_least_five.len() >= 1
+    !piles_of_at_least_five.is_empty()
 }
 
 pub fn calc_ace(hand: &Dice, _special_dice5: bool) -> i16 {

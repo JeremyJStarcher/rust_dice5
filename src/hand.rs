@@ -37,7 +37,7 @@ impl Dice {
 
     pub fn roll_die() -> DieFace {
         let mut rng = rand::thread_rng();
-        (rng.gen_range(0, Self::NUMBER_OF_FACES) + 1).into()
+        rng.gen_range(0, Self::NUMBER_OF_FACES) + 1
     }
 
     #[allow(dead_code)]
@@ -59,7 +59,7 @@ impl Dice {
         }
     }
 
-    pub fn reroll_hand(hand: Self, reroll: &Vec<bool>) -> Self {
+    pub fn reroll_hand(hand: Self, reroll: &[bool]) -> Self {
         if hand.dice.len() != reroll.len() {
             panic!("dice.length and re-roll length must match");
         }
