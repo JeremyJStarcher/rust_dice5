@@ -59,25 +59,17 @@ impl Dice {
         }
     }
 
-    pub fn reroll_hand(hand: Self, reroll: &[bool]) -> Self {
-        if hand.dice.len() != reroll.len() {
+    pub fn reroll(&mut self, reroll: &[bool]) {
+        if self.dice.len() != reroll.len() {
             panic!("dice.length and re-roll length must match");
         }
 
-        let dice: Vec<_> = hand
-            .dice
-            .iter()
-            .zip(reroll)
-            .map(|(face, flag)| match flag {
-                true => Self::roll_die(),
-                false => *face,
-            })
-            .collect();
-
-        Self {
-            dice,
-            rolls_left: hand.rolls_left - 1,
-        }
+        self.dice.iter_mut().zip(reroll).for_each(|(face, &flag)| {
+            if flag {
+                *face = Self::roll_die();
+            }
+        });
+        self.rolls_left -= 1;
     }
 }
 
@@ -95,15 +87,15 @@ mod tests {
 
     #[test]
     fn re_roll_correct_number_of_dice() {
-        let hand = Dice::first_roll();
+        let mut hand = Dice::first_roll();
         let reroll_flags: Vec<bool> = hand.dice.iter().map(|_i| true).collect();
 
         assert_eq!(hand.dice.len(), Dice::NUMBER_OF_DICE);
         assert_eq!(hand.rolls_left, Dice::ROLLS_PER_TURN - 1);
 
-        let hand2 = Dice::reroll_hand(hand, &reroll_flags);
-        assert_eq!(hand2.dice.len(), Dice::NUMBER_OF_DICE);
-        assert_eq!(hand2.rolls_left, Dice::ROLLS_PER_TURN - 2);
+        hand.reroll(&reroll_flags);
+        assert_eq!(hand.dice.len(), Dice::NUMBER_OF_DICE);
+        assert_eq!(hand.rolls_left, Dice::ROLLS_PER_TURN - 2);
     }
 
     #[test]

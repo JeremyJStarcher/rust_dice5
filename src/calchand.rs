@@ -11,14 +11,7 @@ fn sum_faces(hand: &Dice, face: DieFace) -> i16 {
 
 fn sort_faces(hand: &Dice) -> Vec<usize> {
     (1..Dice::NUMBER_OF_DICE + 2)
-        .map(|face| {
-            let face_count: Vec<&DieFace> = hand
-                .dice
-                .iter()
-                .filter(|f| **f == face as DieFace)
-                .collect();
-            face_count.len()
-        })
+        .map(|face| hand.dice.iter().filter(|f| **f == face as DieFace).count())
         .collect()
 }
 
@@ -26,7 +19,7 @@ pub fn hand_to_string(hand: &Dice) -> String {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_one: Vec<_> = faces_count
         .iter()
-        .map(|&f| String::from(if f >= 1 { "+" } else { "-" }))
+        .map(|&f| if f >= 1 { "+" } else { "-" })
         .collect();
 
     piles_of_at_least_one.join("")
@@ -135,10 +128,10 @@ pub fn calc_fh(hand: &Dice, special_dice5: bool) -> i16 {
     }
 
     let faces_count = sort_faces(hand);
-    let piles_of_at_exactly_3: Vec<_> = faces_count.iter().filter(|&f| *f == 3).collect();
+    let piles_of_at_exactly_3 = faces_count.iter().any(|&f| f == 3);
     let piles_of_at_exactly_2: Vec<_> = faces_count.iter().filter(|&f| *f == 2).collect();
 
-    match piles_of_at_exactly_3.len() >= 1 && piles_of_at_exactly_2.len() >= 1 {
+    match piles_of_at_exactly_3 && piles_of_at_exactly_2.len() >= 1 {
         true => VALUE_FULL_HOUSE,
         false => 0,
     }

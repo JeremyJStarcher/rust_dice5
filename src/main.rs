@@ -3,27 +3,20 @@ mod hand;
 mod scorecard;
 mod ui;
 
-use crate::hand::{Dice, DieFace};
+use crate::hand::Dice;
 
-#[macro_use]
-extern crate text_io;
+use std::io::BufRead;
 
 fn read_line() -> String {
-    loop {
-        let line: String = if cfg!(windows) {
-            read!("{}\r\n")
-        } else if cfg!(unix) {
-            read!("{}\n")
-        } else {
-            panic!("Neither Windows nor Unix? What manner of beast art thou?");
-        };
-
+    for line in std::io::stdin().lock().lines() {
+        let line = line.expect("Read error");
         let words: Vec<_> = line.split_whitespace().collect();
 
         if words.len() > 0 {
-            break line;
+            return line;
         }
     }
+    panic!("Out of input");
 }
 
 fn play(slot: &str, hand: &Dice, scorecard: &mut scorecard::ScoreCardData) -> bool {
@@ -58,9 +51,8 @@ fn main() {
         let words: Vec<_> = line.split_whitespace().collect();
 
         match words[0] {
-            "play" => match words.len() {
-                2 => {
-                    let slot = words[1];
+            "play" => match words.as_slice() {
+                [_, slot] => {
                     if play(&slot, &hand, &mut scorecard) {
                         hand = Dice::first_roll();
                         ui::show_card(&scorecard);
@@ -72,7 +64,7 @@ fn main() {
                 }
             },
             "cheat" => {
-                let dice: Vec<DieFace> = vec![6, 6, 6, 6, 6];
+                let dice = vec![6; 5];
                 hand = Dice::roll_fake(dice);
                 ui::show_hand(&hand);
             }
@@ -85,19 +77,18 @@ fn main() {
                     if hand.rolls_left == 0 {
                         println!("No rolls left");
                     } else {
-                        let position_to_reroll: Vec<_> = words[1..].iter().collect();
-                        let position_to_reroll: Vec<_> = position_to_reroll
+                        let mut reroll_flags = vec![false; hand.dice.len()];
+                        words[1..]
                             .iter()
-                            .map(|l| (***l).parse().unwrap_or(0) - 1)
-                            .collect();
+                            .flat_map(|l| l.parse::<usize>())
+                            .map(|p| p - 1)
+                            .for_each(|p| {
+                                if let Some(flag) = reroll_flags.get_mut(p) {
+                                    *flag = true
+                                }
+                            });
 
-                        let range = 0..hand.dice.len();
-
-                        let reroll_flags: Vec<_> = range
-                            .map(|p| position_to_reroll.iter().any(|&x| x == p))
-                            .collect();
-
-                        hand = Dice::reroll_hand(hand, &reroll_flags);
+                        hand.reroll(&reroll_flags);
 
                         ui::show_hand(&hand);
                     }

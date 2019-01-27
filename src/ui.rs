@@ -27,35 +27,21 @@ const SCORE_BOX_WIDTH: usize = 5;
 pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
     let line = score_card.get_line_by_id(&id);
 
-    // HELP: How to get rid of the clone?
-    let sname = line.short_name.clone();
-    let prefix = "<".to_string();
-    let suffix = ">".to_string();
-
-    let val = match line.value {
-        None => [prefix, sname, suffix].join(""),
-        _ => line.value.unwrap().to_string(),
-    };
-
     print!(
-        "{:width$}",
+        "{:width$}  ",
         White.bg(Black).paint(&line.long_name),
         width = LONG_NAME_WIDTH,
     );
 
-    print!("  ");
-
-    match line.value {
-        None => print!(
-            "{:width$}",
-            Yellow.bg(Black).bold().paint(&val),
-            width = SCORE_BOX_WIDTH,
-        ),
-        _ => print!(
+    if let Some(val) = line.value {
+        print!(
             "{:>width$}",
-            Cyan.bg(Black).bold().paint(&val),
+            Cyan.bg(Black).bold().paint(val),
             width = SCORE_BOX_WIDTH,
-        ),
+        );
+    } else {
+        let short = format!("<{}>", &line.short_name);
+        print!("{}", Yellow.bg(Black).bold().paint(short),);
     }
 }
 
@@ -75,41 +61,41 @@ pub fn print_subtotal(line: &scorecard::SubtotalData, score_card: &scorecard::Sc
         Cyan.bg(Black).bold().paint(&val),
         width = SCORE_BOX_WIDTH,
     );
-    println!("");
+    println!();
 }
 
 pub fn show_card(score_card: &scorecard::ScoreCardData) {
     print_line(score_card, LineId::Ace);
-    println!("");
+    println!();
     print_line(score_card, LineId::Two);
-    println!("");
+    println!();
     print_line(score_card, LineId::Three);
-    println!("");
+    println!();
     print_line(score_card, LineId::Four);
-    println!("");
+    println!();
     print_line(score_card, LineId::Five);
-    println!("");
+    println!();
     print_line(score_card, LineId::Six);
-    println!("");
+    println!();
     print_subtotal(&score_card.calc_upper_subtotal, &score_card);
     print_subtotal(&score_card.calc_upper_bonus, &score_card);
     print_subtotal(&score_card.calc_upper_total, &score_card);
     println!("-------------------------");
 
     print_line(score_card, LineId::ThreeKind);
-    println!("");
+    println!();
     print_line(score_card, LineId::FourKind);
-    println!("");
+    println!();
     print_line(score_card, LineId::SmallStraight);
-    println!("");
+    println!();
     print_line(score_card, LineId::LargeStraight);
-    println!("");
+    println!();
     print_line(score_card, LineId::FullHouse);
-    println!("");
+    println!();
     print_line(score_card, LineId::Chance);
-    println!("");
+    println!();
     print_line(score_card, LineId::Dice5);
-    println!("");
+    println!();
     print_subtotal(&score_card.calc_lower_subtotal, &score_card);
     println!("-------------------------");
 
@@ -122,64 +108,61 @@ pub fn show_card(score_card: &scorecard::ScoreCardData) {
 
 pub fn show_hand(hand: &Dice) {
     fn print_color(s: &str, face: DieFace) {
-        match face {
-            1 => print!("{}", Red.bg(White).paint(&s)),
-            2 => print!("{}", Magenta.bg(White).paint(&s)),
-            3 => print!("{}", BrightGreen.bg(White).paint(&s)),
-            4 => print!("{}", BrightCyan.bg(White).paint(&s)),
-            5 => print!("{}", Green.bg(White).paint(&s)),
-            6 => print!("{}", Black.bg(White).paint(&s)),
-            _ => print!("{}", Black.bg(White).paint(&s)),
-        }
+        print!(
+            "{}",
+            match face {
+                1 => Red.bg(White).paint(&s),
+                2 => Magenta.bg(White).paint(&s),
+                3 => BrightGreen.bg(White).paint(&s),
+                4 => BrightCyan.bg(White).paint(&s),
+                5 => Green.bg(White).paint(&s),
+                6 => Black.bg(White).paint(&s),
+                _ => Black.bg(White).paint(&s),
+            }
+        );
     }
 
-    const SIX: &[&str] = &[
-        "●   ●", //
-        "●   ●", //
-        "●   ●", //
+    #[rustfmt::skip]
+    static DICE: [[&str; LINES]; 6] = [
+        [
+            "     ",
+            "  ●  ",
+            "     ",
+        ],
+        [
+            "●    ",
+            "     ",
+            "    ●",
+        ],
+        [
+            "    ●",
+            "  ●  ",
+            "●    ",
+        ],
+        [
+            "●   ●",
+            "     ",
+            "●   ●",
+        ],
+        [
+            "●   ●",
+            "  ●  ",
+            "●   ●",
+        ],
+        [
+            "●   ●",
+            "●   ●",
+            "●   ●",
+        ],
     ];
-    const FIVE: &[&str] = &[
-        "●   ●", //
-        "  ●  ",   //
-        "●   ●", //
-    ];
-    const FOUR: &[&str] = &[
-        "●   ●", //
-        "     ",     //
-        "●   ●", //
-    ];
-    const THREE: &[&str] = &[
-        "    ●", //
-        "  ●  ", //
-        "●    ", //
-    ];
-    const TWO: &[&str] = &[
-        "●    ", //
-        "     ",   //
-        "    ●", //
-    ];
-    const ONE: &[&str] = &[
-        "     ",   //
-        "  ●  ", //
-        "     ",   //
-    ];
+
     const LINES: usize = 3;
 
     for l in 0..LINES {
-        for d in 0..hand.dice.len() {
-            let v = hand.dice[d];
-            let face = match v {
-                1 => ONE,
-                2 => TWO,
-                3 => THREE,
-                4 => FOUR,
-                5 => FIVE,
-                6 => SIX,
-                _ => panic!("Unknown face"),
-            };
-
-            let s = face[l];
-            print_color(s, v);
+        for &v in &hand.dice {
+            // v as usize will panic if v < 0, since v: i8
+            let line = DICE.get(v as usize - 1).expect("Unknown face")[l];
+            print_color(line, v);
             print!("  ");
         }
         println!("");

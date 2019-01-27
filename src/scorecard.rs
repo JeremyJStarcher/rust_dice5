@@ -2,13 +2,13 @@ use super::calchand;
 use crate::hand::Dice;
 use std::fmt;
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum SetError {
     AlreadySet,
     NotFound,
 }
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum LineId {
     Ace,
     Two,
@@ -42,23 +42,13 @@ pub struct SubtotalData {
 
 impl fmt::Display for LineData {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // HELP: Avoid `clone`
-        let sname = self.short_name.clone();
-        let prefix = "<".to_string();
-        let suffix = ">".to_string();
+        write!(f, "{:15} ", self.long_name)?;
 
-        let val = match self.value {
-            None => [prefix, sname, suffix].join(""),
-            _ => self.value.unwrap().to_string(),
-        };
-        write!(
-            f,
-            "{:width$} {:>width2$}",
-            self.long_name,
-            val,
-            width = 15,
-            width2 = 5
-        )
+        if let Some(val) = self.value {
+            write!(f, "{:>5}", val)
+        } else {
+            write!(f, "<{}>", self.short_name)
+        }
     }
 }
 
@@ -98,13 +88,7 @@ impl fmt::Display for ScoreCardData {
 
 impl ScoreCardData {
     pub fn get_line_by_id(&self, zid: &LineId) -> &LineData {
-        let line = self.line.iter().find(|l| l.id == *zid);
-
-        // HELP: How can I do this without the match?
-        match line {
-            None => panic!("not found"),
-            Some(x) => x,
-        }
+        self.line.iter().find(|l| l.id == *zid).expect("not found")
     }
 
     pub fn get_line_by_short_name(&self, short_name: &str) -> &LineData {
@@ -120,25 +104,23 @@ impl ScoreCardData {
     pub fn play(&mut self, slot: &str, hand: &Dice) -> Result<i16, SetError> {
         use crate::calchand;
 
-        let already_has_dice5 = self.get_line_by_id(&LineId::Dice5).value != None;
+        let already_has_dice5 = self.get_line_by_id(&LineId::Dice5).value.is_some();
         let is_dice5 = calchand::is_dice5(hand);
         let special_handling = already_has_dice5 && is_dice5;
 
         let point_result = self.get_points(&slot, &hand, special_handling);
 
-        if point_result.is_ok() {
-            let points = point_result.unwrap();
+        if let Ok(points) = point_result {
             self.set_val(&slot, points)?;
             if special_handling {
                 self.bonus_dice5 += 1;
             }
-            Ok(points)
-        } else {
-            Err(point_result.unwrap_err())
         }
+
+        point_result
     }
 
-    pub fn set_val(&mut self, short_name: &str, value: i16) -> Result<bool, SetError> {
+    pub fn set_val(&mut self, short_name: &str, value: i16) -> Result<(), SetError> {
         let line = self.line.iter_mut().find(|l| l.short_name == *short_name);
 
         match line {
@@ -146,7 +128,7 @@ impl ScoreCardData {
             Some(l) => match l.value {
                 None => {
                     l.value = Some(value);
-                    Ok(true)
+                    Ok(())
                 }
                 _ => Err(SetError::AlreadySet),
             },
@@ -171,17 +153,14 @@ impl ScoreCardData {
     }
 
     pub fn game_over(&mut self) -> bool {
-        !self.line.iter().any(|l| l.value == None)
+        self.line.iter().all(|l| l.value.is_some())
     }
 }
 
 fn calc_subtotal(scorecard: &ScoreCardData, a: &[LineId]) -> i16 {
-    let vals: Vec<_> = a
-        .iter()
-        .map(|line_id| scorecard.get_line_by_id(line_id).value.unwrap_or(0))
-        .collect();
-
-    vals.iter().sum()
+    a.iter()
+        .flat_map(|line_id| scorecard.get_line_by_id(line_id).value)
+        .sum()
 }
 
 fn calc_upper_subtotal(scorecard: &ScoreCardData) -> i16 {
