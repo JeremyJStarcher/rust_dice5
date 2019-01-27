@@ -74,41 +74,41 @@ pub fn print_subtotal(line: &scorecard::SubtotalData, score_card: &scorecard::Sc
         Cyan.bg(Black).bold().paint(&val),
         width = SCORE_BOX_WIDTH,
     );
-    println!("");
+    println!();
 }
 
 pub fn show_card(score_card: &scorecard::ScoreCardData) {
     print_line(score_card, LineId::Ace);
-    println!("");
+    println!();
     print_line(score_card, LineId::Two);
-    println!("");
+    println!();
     print_line(score_card, LineId::Three);
-    println!("");
+    println!();
     print_line(score_card, LineId::Four);
-    println!("");
+    println!();
     print_line(score_card, LineId::Five);
-    println!("");
+    println!();
     print_line(score_card, LineId::Six);
-    println!("");
+    println!();
     print_subtotal(&score_card.calc_upper_subtotal, &score_card);
     print_subtotal(&score_card.calc_upper_bonus, &score_card);
     print_subtotal(&score_card.calc_upper_total, &score_card);
     println!("-------------------------");
 
     print_line(score_card, LineId::ThreeKind);
-    println!("");
+    println!();
     print_line(score_card, LineId::FourKind);
-    println!("");
+    println!();
     print_line(score_card, LineId::SmallStraight);
-    println!("");
+    println!();
     print_line(score_card, LineId::LargeStraight);
-    println!("");
+    println!();
     print_line(score_card, LineId::FullHouse);
-    println!("");
+    println!();
     print_line(score_card, LineId::Chance);
-    println!("");
+    println!();
     print_line(score_card, LineId::Dice5);
-    println!("");
+    println!();
     print_subtotal(&score_card.calc_lower_subtotal, &score_card);
     println!("-------------------------");
 
@@ -181,8 +181,8 @@ pub fn show_hand(hand: &Dice) {
             print_color(s, v);
             print!("  ");
         }
-        println!("");
+        println!();
     }
-    println!("");
+    println!();
     println!("Rolls left: {}", hand.rolls_left);
 }

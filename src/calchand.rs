@@ -26,9 +26,12 @@ pub fn hand_to_string(hand: &Dice) -> String {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_one: Vec<_> = faces_count
         .iter()
-        .map(|&f| match f >= 1 {
-            true => "+".to_string(),
-            false => "-".to_string(),
+        .map(|&f| {
+            if f >= 1 {
+                "+".to_string()
+            } else {
+                "-".to_string()
+            }
         })
         .collect();
 
@@ -36,13 +39,13 @@ pub fn hand_to_string(hand: &Dice) -> String {
 }
 
 fn sum_all_dice(hand: &Dice) -> i16 {
-    hand.dice.iter().map(|&f| f as i16).sum()
+    hand.dice.iter().map(|&f| i16::from(f)).sum()
 }
 
 pub fn is_dice5(hand: &Dice) -> bool {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_five: Vec<_> = faces_count.iter().filter(|&f| *f >= 5).collect();
-    piles_of_at_least_five.len() >= 1
+    !piles_of_at_least_five.is_empty()
 }
 
 pub fn calc_ace(hand: &Dice, _special_dice5: bool) -> i16 {
@@ -72,18 +75,20 @@ pub fn calc_six(hand: &Dice, _special_dice5: bool) -> i16 {
 pub fn calc_3k(hand: &Dice, _special_dice5: bool) -> i16 {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_three: Vec<_> = faces_count.iter().filter(|&f| *f >= 3).collect();
-    match piles_of_at_least_three.len() >= 1 {
-        true => sum_all_dice(hand),
-        false => 0,
+    if !piles_of_at_least_three.is_empty() {
+        sum_all_dice(hand)
+    } else {
+        0
     }
 }
 
 pub fn calc_4k(hand: &Dice, _special_dice5: bool) -> i16 {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_four: Vec<_> = faces_count.iter().filter(|&f| *f >= 4).collect();
-    match piles_of_at_least_four.len() >= 1 {
-        true => sum_all_dice(hand),
-        false => 0,
+    if !piles_of_at_least_four.is_empty() {
+        sum_all_dice(hand)
+    } else {
+        0
     }
 }
 
@@ -98,9 +103,10 @@ pub fn calc_ss(hand: &Dice, special_dice5: bool) -> i16 {
 
     let str = hand_to_string(hand);
 
-    match str.contains("++++") {
-        true => VALUE_SMALL_STRAIGHT,
-        false => 0,
+    if str.contains("++++") {
+        VALUE_SMALL_STRAIGHT
+    } else {
+        0
     }
 }
 
@@ -115,16 +121,18 @@ pub fn calc_ls(hand: &Dice, special_dice5: bool) -> i16 {
 
     let str = hand_to_string(hand);
 
-    match str.contains("+++++") {
-        true => VALUE_LARGE_STRAIGHT,
-        false => 0,
+    if str.contains("+++++") {
+        VALUE_LARGE_STRAIGHT
+    } else {
+        0
     }
 }
 
 pub fn calc_dice5(hand: &Dice, _special_dice5: bool) -> i16 {
-    match is_dice5(hand) {
-        true => VALUE_DICE5,
-        false => 0,
+    if is_dice5(hand) {
+        VALUE_DICE5
+    } else {
+        0
     }
 }
 
@@ -141,9 +149,10 @@ pub fn calc_fh(hand: &Dice, special_dice5: bool) -> i16 {
     let piles_of_at_exactly_3: Vec<_> = faces_count.iter().filter(|&f| *f == 3).collect();
     let piles_of_at_exactly_2: Vec<_> = faces_count.iter().filter(|&f| *f == 2).collect();
 
-    match piles_of_at_exactly_3.len() >= 1 && piles_of_at_exactly_2.len() >= 1 {
-        true => VALUE_FULL_HOUSE,
-        false => 0,
+    if !piles_of_at_exactly_3.is_empty() && !piles_of_at_exactly_2.is_empty() {
+        VALUE_FULL_HOUSE
+    } else {
+        0
     }
 }
 

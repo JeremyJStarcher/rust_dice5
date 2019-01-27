@@ -20,7 +20,7 @@ fn read_line() -> String {
 
         let words: Vec<_> = line.split_whitespace().collect();
 
-        if words.len() > 0 {
+        if !words.is_empty() {
             break line;
         }
     }

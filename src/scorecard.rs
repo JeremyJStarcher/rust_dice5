@@ -82,7 +82,7 @@ impl fmt::Display for ScoreCardData {
             format!("{}", self.get_line_by_id(&LineId::Four)),
             format!("{}", self.get_line_by_id(&LineId::Five)),
             format!("{}", self.get_line_by_id(&LineId::Six)),
-            format!("-------------------------"),
+            "-------------------------".to_string(),
             format!("{}", self.get_line_by_id(&LineId::ThreeKind)),
             format!("{}", self.get_line_by_id(&LineId::FourKind)),
             format!("{}", self.get_line_by_id(&LineId::SmallStraight)),
@@ -181,7 +181,7 @@ fn calc_subtotal(scorecard: &ScoreCardData, a: &[LineId]) -> i16 {
         .map(|line_id| scorecard.get_line_by_id(line_id).value.unwrap_or(0))
         .collect();
 
-    vals.iter().fold(0, |a, &b| a + b)
+    vals.iter().sum()
 }
 
 fn calc_upper_subtotal(scorecard: &ScoreCardData) -> i16 {
