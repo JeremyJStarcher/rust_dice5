@@ -97,7 +97,7 @@ fn main() {
                             .map(|p| position_to_reroll.iter().any(|&x| x == p))
                             .collect();
 
-                        hand = Dice::reroll_hand(hand, &reroll_flags);
+                        hand.reroll(&reroll_flags);
 
                         ui::show_hand(&hand);
                     }
