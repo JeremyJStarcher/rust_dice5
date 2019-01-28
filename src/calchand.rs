@@ -1,6 +1,4 @@
-use super::hand;
-use super::hand::Dice;
-use super::hand::DieFace;
+use crate::hand::{Dice, DieFace};
 
 const VALUE_SMALL_STRAIGHT: i16 = 30;
 const VALUE_LARGE_STRAIGHT: i16 = 40;
@@ -12,15 +10,8 @@ fn sum_faces(hand: &Dice, face: DieFace) -> i16 {
 }
 
 fn sort_faces(hand: &Dice) -> Vec<usize> {
-    (1..hand::Dice::NUMBER_OF_DICE + 2)
-        .map(|face| {
-            let face_count: Vec<&DieFace> = hand
-                .dice
-                .iter()
-                .filter(|f| **f == face as DieFace)
-                .collect();
-            face_count.len()
-        })
+    (1..Dice::NUMBER_OF_DICE + 2)
+        .map(|face| hand.dice.iter().filter(|f| **f == face as DieFace).count())
         .collect()
 }
 
@@ -28,23 +19,19 @@ pub fn hand_to_string(hand: &Dice) -> String {
     let faces_count = sort_faces(hand);
     let piles_of_at_least_one: Vec<_> = faces_count
         .iter()
-        .map(|&f| match f >= 1 {
-            true => "+".to_string(),
-            false => "-".to_string(),
-        })
+        .map(|&f| if f >= 1 { "+" } else { "-" })
         .collect();
 
     piles_of_at_least_one.join("")
 }
 
 fn sum_all_dice(hand: &Dice) -> i16 {
-    hand.dice.iter().map(|&f| f as i16).sum()
+    hand.dice.iter().map(|&f| i16::from(f)).sum()
 }
 
 pub fn is_dice5(hand: &Dice) -> bool {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_five: Vec<_> = faces_count.iter().filter(|&f| *f >= 5).collect();
-    piles_of_at_least_five.len() >= 1
+    faces_count.iter().any(|&f| f >= 5)
 }
 
 pub fn calc_ace(hand: &Dice, _special_dice5: bool) -> i16 {
@@ -73,19 +60,21 @@ pub fn calc_six(hand: &Dice, _special_dice5: bool) -> i16 {
 
 pub fn calc_3k(hand: &Dice, _special_dice5: bool) -> i16 {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_three: Vec<_> = faces_count.iter().filter(|&f| *f >= 3).collect();
-    match piles_of_at_least_three.len() >= 1 {
-        true => sum_all_dice(hand),
-        false => 0,
+    let piles_of_at_least_three = faces_count.iter().any(|&f| f >= 3);
+    if piles_of_at_least_three {
+        sum_all_dice(hand)
+    } else {
+        0
     }
 }
 
 pub fn calc_4k(hand: &Dice, _special_dice5: bool) -> i16 {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_four: Vec<_> = faces_count.iter().filter(|&f| *f >= 4).collect();
-    match piles_of_at_least_four.len() >= 1 {
-        true => sum_all_dice(hand),
-        false => 0,
+    let piles_of_at_least_four = faces_count.iter().any(|&f| f >= 4);
+    if piles_of_at_least_four {
+        sum_all_dice(hand)
+    } else {
+        0
     }
 }
 
@@ -100,9 +89,10 @@ pub fn calc_ss(hand: &Dice, special_dice5: bool) -> i16 {
 
     let str = hand_to_string(hand);
 
-    match str.contains("++++") {
-        true => VALUE_SMALL_STRAIGHT,
-        false => 0,
+    if str.contains("++++") {
+        VALUE_SMALL_STRAIGHT
+    } else {
+        0
     }
 }
 
@@ -117,16 +107,18 @@ pub fn calc_ls(hand: &Dice, special_dice5: bool) -> i16 {
 
     let str = hand_to_string(hand);
 
-    match str.contains("+++++") {
-        true => VALUE_LARGE_STRAIGHT,
-        false => 0,
+    if str.contains("+++++") {
+        VALUE_LARGE_STRAIGHT
+    } else {
+        0
     }
 }
 
 pub fn calc_dice5(hand: &Dice, _special_dice5: bool) -> i16 {
-    match is_dice5(hand) {
-        true => VALUE_DICE5,
-        false => 0,
+    if is_dice5(hand) {
+        VALUE_DICE5
+    } else {
+        0
     }
 }
 
@@ -140,12 +132,13 @@ pub fn calc_fh(hand: &Dice, special_dice5: bool) -> i16 {
     }
 
     let faces_count = sort_faces(hand);
-    let piles_of_at_exactly_3: Vec<_> = faces_count.iter().filter(|&f| *f == 3).collect();
-    let piles_of_at_exactly_2: Vec<_> = faces_count.iter().filter(|&f| *f == 2).collect();
+    let piles_of_at_exactly_3 = faces_count.iter().any(|&f| f == 3);
+    let piles_of_at_exactly_2 = faces_count.iter().any(|&f| f == 2);
 
-    match piles_of_at_exactly_3.len() >= 1 && piles_of_at_exactly_2.len() >= 1 {
-        true => VALUE_FULL_HOUSE,
-        false => 0,
+    if piles_of_at_exactly_3 && piles_of_at_exactly_2 {
+        VALUE_FULL_HOUSE
+    } else {
+        0
     }
 }
 
@@ -155,9 +148,9 @@ pub fn calc_chance(hand: &Dice, _special_dice5: bool) -> i16 {
 
 #[cfg(test)]
 mod tests {
-    use super::super::scorecard;
     use super::*;
-    use scorecard::LineId as L;
+    use crate::scorecard;
+    use crate::scorecard::LineId as L;
 
     #[test]
     fn test_ace_all_aces() {
@@ -165,7 +158,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Ace).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Ace).calc)(&hand, false);
         assert_eq!(score, 1 * 5);
     }
 
@@ -175,7 +168,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Ace).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Ace).calc)(&hand, false);
         assert_eq!(score, 1 * 2);
     }
 
@@ -185,7 +178,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Two).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Two).calc)(&hand, false);
         assert_eq!(score, 2 * 5);
     }
 
@@ -195,7 +188,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Two).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Two).calc)(&hand, false);
         assert_eq!(score, 2 * 2);
     }
 
@@ -205,7 +198,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Three).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Three).calc)(&hand, false);
         assert_eq!(score, 3 * 5);
     }
 
@@ -215,7 +208,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Three).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Three).calc)(&hand, false);
         assert_eq!(score, 3 * 4);
     }
 
@@ -225,7 +218,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Four).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Four).calc)(&hand, false);
         assert_eq!(score, 4 * 5);
     }
 
@@ -235,7 +228,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Four).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Four).calc)(&hand, false);
         assert_eq!(score, 4 * 0);
     }
 
@@ -245,7 +238,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Five).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Five).calc)(&hand, false);
         assert_eq!(score, 5 * 5);
     }
 
@@ -255,7 +248,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Six).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Six).calc)(&hand, false);
         assert_eq!(score, 6 * 5);
     }
 
@@ -265,7 +258,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::ThreeKind).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::ThreeKind).calc)(&hand, false);
         assert_eq!(score, (6 * 3) + 1 + 2);
     }
 
@@ -275,7 +268,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::ThreeKind).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::ThreeKind).calc)(&hand, false);
         assert_eq!(score, 5);
     }
 
@@ -285,7 +278,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::ThreeKind).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::ThreeKind).calc)(&hand, false);
         assert_eq!(score, 3 * 4 + 1);
     }
 
@@ -295,7 +288,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::ThreeKind).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::ThreeKind).calc)(&hand, false);
         assert_eq!(score, 0);
     }
 
@@ -305,7 +298,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::FourKind).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::FourKind).calc)(&hand, false);
         assert_eq!(score, (6 * 4) + 2);
     }
 
@@ -315,7 +308,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::FourKind).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::FourKind).calc)(&hand, false);
         assert_eq!(score, 5);
     }
 
@@ -325,7 +318,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::FourKind).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::FourKind).calc)(&hand, false);
         assert_eq!(score, 0);
     }
 
@@ -335,7 +328,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::SmallStraight).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::SmallStraight).calc)(&hand, false);
         assert_eq!(score, VALUE_SMALL_STRAIGHT);
     }
 
@@ -345,7 +338,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::SmallStraight).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::SmallStraight).calc)(&hand, false);
         assert_eq!(score, VALUE_SMALL_STRAIGHT);
     }
 
@@ -355,7 +348,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::SmallStraight).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::SmallStraight).calc)(&hand, false);
         assert_eq!(score, VALUE_SMALL_STRAIGHT);
     }
 
@@ -365,7 +358,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::SmallStraight).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::SmallStraight).calc)(&hand, false);
         assert_eq!(score, VALUE_SMALL_STRAIGHT);
     }
 
@@ -375,7 +368,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::SmallStraight).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::SmallStraight).calc)(&hand, false);
         assert_eq!(score, 0);
     }
 
@@ -385,7 +378,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::SmallStraight).calc)(&hand, true);
+        let score = (scorecard.get_line_by_id(L::SmallStraight).calc)(&hand, true);
         assert_eq!(score, VALUE_SMALL_STRAIGHT);
     }
 
@@ -395,7 +388,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::LargeStraight).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::LargeStraight).calc)(&hand, false);
         assert_eq!(score, VALUE_LARGE_STRAIGHT);
     }
 
@@ -405,7 +398,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::LargeStraight).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::LargeStraight).calc)(&hand, false);
         assert_eq!(score, 0);
     }
 
@@ -415,7 +408,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::LargeStraight).calc)(&hand, true);
+        let score = (scorecard.get_line_by_id(L::LargeStraight).calc)(&hand, true);
         assert_eq!(score, VALUE_LARGE_STRAIGHT);
     }
 
@@ -425,7 +418,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::LargeStraight).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::LargeStraight).calc)(&hand, false);
         assert_eq!(score, VALUE_LARGE_STRAIGHT);
     }
 
@@ -435,7 +428,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::FullHouse).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::FullHouse).calc)(&hand, false);
         assert_eq!(score, 0);
     }
 
@@ -445,7 +438,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::FullHouse).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::FullHouse).calc)(&hand, false);
         assert_eq!(score, VALUE_FULL_HOUSE);
     }
 
@@ -455,7 +448,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::FullHouse).calc)(&hand, true);
+        let score = (scorecard.get_line_by_id(L::FullHouse).calc)(&hand, true);
         assert_eq!(score, VALUE_FULL_HOUSE);
     }
 
@@ -465,7 +458,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Chance).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Chance).calc)(&hand, false);
         assert_eq!(score, 1 + 2 + 3 + 4 + 5);
     }
 
@@ -475,7 +468,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Dice5).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Dice5).calc)(&hand, false);
         assert_eq!(score, VALUE_DICE5);
     }
 
@@ -485,7 +478,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Dice5).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Dice5).calc)(&hand, false);
         assert_eq!(score, 0);
     }
 
@@ -495,7 +488,7 @@ mod tests {
         let hand = Dice::roll_fake(test_dice);
 
         let scorecard = scorecard::get_new_scorecard_data();
-        let score = (scorecard.get_line_by_id(&L::Ace).calc)(&hand, false);
+        let score = (scorecard.get_line_by_id(L::Ace).calc)(&hand, false);
         assert_eq!(score, 0);
     }
 }

@@ -1,15 +1,14 @@
-use super::calchand;
-use super::hand;
-use hand::Dice;
+use crate::calchand;
+use crate::hand::Dice;
 use std::fmt;
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum SetError {
     AlreadySet,
     NotFound,
 }
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum LineId {
     Ace,
     Two,
@@ -43,23 +42,13 @@ pub struct SubtotalData {
 
 impl fmt::Display for LineData {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // HELP: Avoid `clone`
-        let sname = self.short_name.clone();
-        let prefix = "<".to_string();
-        let suffix = ">".to_string();
+        write!(f, "{:15} ", self.long_name)?;
 
-        let val = match self.value {
-            None => [prefix, sname, suffix].join(""),
-            _ => self.value.unwrap().to_string(),
-        };
-        write!(
-            f,
-            "{:width$} {:>width2$}",
-            self.long_name,
-            val,
-            width = 15,
-            width2 = 5
-        )
+        if let Some(val) = self.value {
+            write!(f, "{:>5}", val)
+        } else {
+            write!(f, "<{}>", self.short_name)
+        }
     }
 }
 
@@ -77,20 +66,20 @@ pub struct ScoreCardData {
 impl fmt::Display for ScoreCardData {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let out: Vec<_> = vec![
-            format!("{}", self.get_line_by_id(&LineId::Ace)),
-            format!("{}", self.get_line_by_id(&LineId::Two)),
-            format!("{}", self.get_line_by_id(&LineId::Three)),
-            format!("{}", self.get_line_by_id(&LineId::Four)),
-            format!("{}", self.get_line_by_id(&LineId::Five)),
-            format!("{}", self.get_line_by_id(&LineId::Six)),
-            format!("-------------------------"),
-            format!("{}", self.get_line_by_id(&LineId::ThreeKind)),
-            format!("{}", self.get_line_by_id(&LineId::FourKind)),
-            format!("{}", self.get_line_by_id(&LineId::SmallStraight)),
-            format!("{}", self.get_line_by_id(&LineId::LargeStraight)),
-            format!("{}", self.get_line_by_id(&LineId::FullHouse)),
-            format!("{}", self.get_line_by_id(&LineId::Chance)),
-            format!("{}", self.get_line_by_id(&LineId::Dice5)),
+            format!("{}", self.get_line_by_id(LineId::Ace)),
+            format!("{}", self.get_line_by_id(LineId::Two)),
+            format!("{}", self.get_line_by_id(LineId::Three)),
+            format!("{}", self.get_line_by_id(LineId::Four)),
+            format!("{}", self.get_line_by_id(LineId::Five)),
+            format!("{}", self.get_line_by_id(LineId::Six)),
+            "-------------------------".to_string(),
+            format!("{}", self.get_line_by_id(LineId::ThreeKind)),
+            format!("{}", self.get_line_by_id(LineId::FourKind)),
+            format!("{}", self.get_line_by_id(LineId::SmallStraight)),
+            format!("{}", self.get_line_by_id(LineId::LargeStraight)),
+            format!("{}", self.get_line_by_id(LineId::FullHouse)),
+            format!("{}", self.get_line_by_id(LineId::Chance)),
+            format!("{}", self.get_line_by_id(LineId::Dice5)),
         ];
 
         write!(f, "{}", out.join("\n"))
@@ -98,14 +87,8 @@ impl fmt::Display for ScoreCardData {
 }
 
 impl ScoreCardData {
-    pub fn get_line_by_id(&self, zid: &LineId) -> &LineData {
-        let line = self.line.iter().find(|l| l.id == *zid);
-
-        // HELP: How can I do this without the match?
-        match line {
-            None => panic!("not found"),
-            Some(x) => x,
-        }
+    pub fn get_line_by_id(&self, zid: LineId) -> &LineData {
+        self.line.iter().find(|l| l.id == zid).expect("not found")
     }
 
     pub fn get_line_by_short_name(&self, short_name: &str) -> &LineData {
@@ -119,27 +102,24 @@ impl ScoreCardData {
     }
 
     pub fn play(&mut self, slot: &str, hand: &Dice) -> Result<i16, SetError> {
-        use calchand;
+        use crate::calchand;
 
-        let already_has_dice5 = self.get_line_by_id(&LineId::Dice5).value != None;
+        let already_has_dice5 = self.get_line_by_id(LineId::Dice5).value.is_some();
         let is_dice5 = calchand::is_dice5(hand);
         let special_handling = already_has_dice5 && is_dice5;
 
         let point_result = self.get_points(&slot, &hand, special_handling);
 
-        if point_result.is_ok() {
-            let points = point_result.unwrap();
+        if let Ok(points) = point_result {
             self.set_val(&slot, points)?;
             if special_handling {
                 self.bonus_dice5 += 1;
             }
-            Ok(points)
-        } else {
-            Err(point_result.unwrap_err())
         }
+        point_result
     }
 
-    pub fn set_val(&mut self, short_name: &str, value: i16) -> Result<bool, SetError> {
+    pub fn set_val(&mut self, short_name: &str, value: i16) -> Result<(), SetError> {
         let line = self.line.iter_mut().find(|l| l.short_name == *short_name);
 
         match line {
@@ -147,7 +127,7 @@ impl ScoreCardData {
             Some(l) => match l.value {
                 None => {
                     l.value = Some(value);
-                    Ok(true)
+                    Ok(())
                 }
                 _ => Err(SetError::AlreadySet),
             },
@@ -172,21 +152,18 @@ impl ScoreCardData {
     }
 
     pub fn game_over(&mut self) -> bool {
-        !self.line.iter().any(|l| l.value == None)
+        self.line.iter().all(|l| l.value.is_some())
     }
 }
 
-fn calc_subtotal(scorecard: &ScoreCardData, a: &[LineId]) -> i16 {
-    let vals: Vec<_> = a
-        .iter()
-        .map(|line_id| scorecard.get_line_by_id(line_id).value.unwrap_or(0))
-        .collect();
-
-    vals.iter().fold(0, |a, &b| a + b)
+fn calc_subtotal(scorecard: &ScoreCardData, a: Vec<LineId>) -> i16 {
+    a.iter()
+        .flat_map(|&line_id| scorecard.get_line_by_id(line_id).value)
+        .sum()
 }
 
 fn calc_upper_subtotal(scorecard: &ScoreCardData) -> i16 {
-    let a = [
+    let a = vec![
         LineId::Ace,
         LineId::Two,
         LineId::Three,
@@ -194,7 +171,7 @@ fn calc_upper_subtotal(scorecard: &ScoreCardData) -> i16 {
         LineId::Five,
         LineId::Six,
     ];
-    calc_subtotal(&scorecard, &a)
+    calc_subtotal(&scorecard, a)
 }
 
 fn calc_upper_bonus(scorecard: &ScoreCardData) -> i16 {
@@ -211,7 +188,7 @@ fn calc_upper_total(scorecard: &ScoreCardData) -> i16 {
 }
 
 fn calc_lower_subtotal(scorecard: &ScoreCardData) -> i16 {
-    let a = [
+    let a = vec![
         LineId::ThreeKind,
         LineId::FourKind,
         LineId::SmallStraight,
@@ -220,7 +197,7 @@ fn calc_lower_subtotal(scorecard: &ScoreCardData) -> i16 {
         LineId::Chance,
         LineId::Dice5,
     ];
-    calc_subtotal(&scorecard, &a)
+    calc_subtotal(&scorecard, a)
 }
 
 fn calc_dice5_bonus(scorecard: &ScoreCardData) -> i16 {
@@ -365,7 +342,7 @@ mod tests {
     #[test]
     fn get_new_scorecard_returns_card() {
         let scorecard = get_new_scorecard_data();
-        let score = scorecard.get_line_by_id(&L::Ace).value;
+        let score = scorecard.get_line_by_id(L::Ace).value;
         assert_eq!(score, None);
     }
 
@@ -374,7 +351,7 @@ mod tests {
         let mut scorecard = get_new_scorecard_data();
         let points = 99;
 
-        let line = scorecard.get_line_by_id(&L::Ace);
+        let line = scorecard.get_line_by_id(L::Ace);
         let result = scorecard.set_val(&line.short_name.clone(), points);
         match result {
             Err(SErr::NotFound) => {
@@ -384,7 +361,7 @@ mod tests {
                 panic!("Already Set shoudln't happen");
             }
             Ok(_) => {
-                let p = scorecard.get_line_by_id(&L::Ace).value.unwrap();
+                let p = scorecard.get_line_by_id(L::Ace).value.unwrap();
                 assert_eq!(p, points);
                 assert!(true);
             }
@@ -414,7 +391,7 @@ mod tests {
     #[test]
     fn get_points() {
         let mut scorecard = get_new_scorecard_data();
-        let line = scorecard.get_line_by_id(&L::Chance);
+        let line = scorecard.get_line_by_id(L::Chance);
         let dice = Dice::first_roll();
 
         let result = scorecard.get_points(&line.short_name.clone(), &dice, false);
@@ -438,7 +415,7 @@ mod tests {
         let points1 = 99;
         let points2 = 32;
 
-        let line = scorecard.get_line_by_id(&L::Ace);
+        let line = scorecard.get_line_by_id(L::Ace);
         let sname = line.short_name.clone();
 
         let result1 = scorecard.set_val(&sname, points1);
@@ -454,7 +431,7 @@ mod tests {
                 panic!("Not found shouldn't happen");
             }
             Err(SErr::AlreadySet) => {
-                let p = scorecard.get_line_by_id(&L::Ace).value.unwrap();
+                let p = scorecard.get_line_by_id(L::Ace).value.unwrap();
                 assert_eq!(p, points1);
             }
             Ok(_) => {
