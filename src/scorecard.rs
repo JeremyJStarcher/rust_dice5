@@ -152,7 +152,7 @@ impl ScoreCardData {
     }
 
     pub fn game_over(&mut self) -> bool {
-        !self.line.iter().any(|l| l.value == None)
+        self.line.iter().all(|l| l.value.is_some())
     }
 }
 
