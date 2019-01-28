@@ -157,12 +157,9 @@ impl ScoreCardData {
 }
 
 fn calc_subtotal(scorecard: &ScoreCardData, a: Vec<LineId>) -> i16 {
-    let vals: Vec<_> = a
-        .iter()
-        .map(|&line_id| scorecard.get_line_by_id(line_id).value.unwrap_or(0))
-        .collect();
-
-    vals.iter().sum()
+    a.iter()
+        .flat_map(|&line_id| scorecard.get_line_by_id(line_id).value)
+        .sum()
 }
 
 fn calc_upper_subtotal(scorecard: &ScoreCardData) -> i16 {

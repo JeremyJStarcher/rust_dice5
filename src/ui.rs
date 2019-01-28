@@ -25,36 +25,24 @@ const SCORE_BOX_WIDTH: usize = 5;
 
 pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
     let line = score_card.get_line_by_id(id);
-
-    // HELP: How to get rid of the clone?
-    let sname = line.short_name.clone();
-    let prefix = "<".to_string();
-    let suffix = ">".to_string();
-
-    let val = match line.value {
-        None => [prefix, sname, suffix].join(""),
-        _ => line.value.unwrap().to_string(),
-    };
-
     print!(
-        "{:width$}",
+        "{:width$}  ",
         White.bg(Black).paint(&line.long_name),
         width = LONG_NAME_WIDTH,
     );
-
-    print!("  ");
-
-    match line.value {
-        None => print!(
-            "{:width$}",
-            Yellow.bg(Black).bold().paint(&val),
-            width = SCORE_BOX_WIDTH,
-        ),
-        _ => print!(
+    if let Some(val) = line.value {
+        print!(
             "{:>width$}",
-            Cyan.bg(Black).bold().paint(&val),
+            Cyan.bg(Black).bold().paint(val),
             width = SCORE_BOX_WIDTH,
-        ),
+        );
+    } else {
+        let short = format!("<{}>", &line.short_name);
+        print!(
+            "{:width$}",
+            Yellow.bg(Black).bold().paint(short),
+            width = SCORE_BOX_WIDTH
+        );
     }
 }
 
