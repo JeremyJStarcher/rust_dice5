@@ -77,17 +77,17 @@ fn main() {
                     if hand.rolls_left == 0 {
                         println!("No rolls left");
                     } else {
-                        let position_to_reroll: Vec<_> = words[1..].iter().collect();
-                        let position_to_reroll: Vec<_> = position_to_reroll
+                        let mut reroll_flags = vec![false; hand.dice.len()];
+
+                        words[1..]
                             .iter()
-                            .map(|l| (***l).parse().unwrap_or(0) - 1)
-                            .collect();
-
-                        let range = 0..hand.dice.len();
-
-                        let reroll_flags: Vec<_> = range
-                            .map(|p| position_to_reroll.iter().any(|&x| x == p))
-                            .collect();
+                            .flat_map(|l| l.parse::<usize>())
+                            .map(|p| p - 1)
+                            .for_each(|p| {
+                                if let Some(flag) = reroll_flags.get_mut(p) {
+                                    *flag = true
+                                }
+                            });
 
                         hand.reroll(&reroll_flags);
 
