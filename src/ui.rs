@@ -109,15 +109,18 @@ pub fn show_card(score_card: &scorecard::ScoreCardData) {
 
 pub fn show_hand(hand: &Dice) {
     fn print_color(s: &str, face: DieFace) {
-        match face {
-            1 => print!("{}", Red.bg(White).paint(&s)),
-            2 => print!("{}", Magenta.bg(White).paint(&s)),
-            3 => print!("{}", BrightGreen.bg(White).paint(&s)),
-            4 => print!("{}", BrightCyan.bg(White).paint(&s)),
-            5 => print!("{}", Green.bg(White).paint(&s)),
-            6 => print!("{}", Black.bg(White).paint(&s)),
-            _ => print!("{}", Black.bg(White).paint(&s)),
-        }
+        print!(
+            "{}",
+            match face {
+                1 => Red.bg(White).paint(&s),
+                2 => Magenta.bg(White).paint(&s),
+                3 => BrightGreen.bg(White).paint(&s),
+                4 => BrightCyan.bg(White).paint(&s),
+                5 => Green.bg(White).paint(&s),
+                6 => Black.bg(White).paint(&s),
+                _ => Black.bg(White).paint(&s),
+            }
+        );
     }
 
     const SIX: &[&str] = &[
