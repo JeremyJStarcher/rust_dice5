@@ -4,7 +4,7 @@ mod scorecard;
 mod ui;
 use std::io::BufRead;
 
-use crate::hand::{Dice};
+use crate::hand::Dice;
 
 fn read_line() -> String {
     for line in std::io::stdin().lock().lines() {
@@ -12,7 +12,7 @@ fn read_line() -> String {
 
         let words: Vec<_> = line.split_whitespace().collect();
 
-        if words.len() > 0 {
+        if !words.is_empty() {
             return line;
         }
     }

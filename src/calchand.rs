@@ -31,8 +31,7 @@ fn sum_all_dice(hand: &Dice) -> i16 {
 
 pub fn is_dice5(hand: &Dice) -> bool {
     let faces_count = sort_faces(hand);
-    let piles_of_at_least_five = faces_count.iter().any(|&f| f >= 5);
-    piles_of_at_least_five
+    faces_count.iter().any(|&f| f >= 5)
 }
 
 pub fn calc_ace(hand: &Dice, _special_dice5: bool) -> i16 {
