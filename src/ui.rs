@@ -127,24 +127,9 @@ pub fn show_hand(hand: &Dice) {
     #[rustfmt::skip]
     static DICE: [[&str; LINES]; 6] = [
         [
-            "●   ●",
-            "●   ●",
-            "●   ●",
-        ],
-        [
-            "●   ●",
-            "  ●  ",
-            "●   ●",
-        ],
-        [
-            "●   ●",
             "     ",
-            "●   ●",
-        ],
-        [
-            "    ●",
             "  ●  ",
-            "●    ",
+            "     ",
         ],
         [
             "●    ",
@@ -152,9 +137,24 @@ pub fn show_hand(hand: &Dice) {
             "    ●",
         ],
         [
-            "     ",
+            "    ●",
             "  ●  ",
+            "●    ",
+        ],
+        [
+            "●   ●",
             "     ",
+            "●   ●",
+        ],
+        [
+            "●   ●",
+            "  ●  ",
+            "●   ●",
+        ],
+        [
+            "●   ●",
+            "●   ●",
+            "●   ●",
         ],
     ];
 
@@ -169,5 +169,6 @@ pub fn show_hand(hand: &Dice) {
         println!();
     }
     println!();
+    println!("{}", hand);
     println!("Rolls left: {}", hand.rolls_left);
 }
