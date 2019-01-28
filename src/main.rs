@@ -4,7 +4,7 @@ mod scorecard;
 mod ui;
 use std::io::BufRead;
 
-use crate::hand::{Dice, DieFace};
+use crate::hand::{Dice};
 
 fn read_line() -> String {
     for line in std::io::stdin().lock().lines() {
@@ -64,7 +64,7 @@ fn main() {
                 }
             },
             "cheat" => {
-                let dice: Vec<DieFace> = vec![6, 6, 6, 6, 6];
+                let dice = vec![6; 5];
                 hand = Dice::roll_fake(dice);
                 ui::show_hand(&hand);
             }
