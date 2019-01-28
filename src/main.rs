@@ -51,9 +51,8 @@ fn main() {
         let words: Vec<_> = line.split_whitespace().collect();
 
         match words[0] {
-            "play" => match words.len() {
-                2 => {
-                    let slot = words[1];
+            "play" => match words.as_slice() {
+                [_, slot] => {
                     if play(&slot, &hand, &mut scorecard) {
                         hand = Dice::first_roll();
                         ui::show_card(&scorecard);
