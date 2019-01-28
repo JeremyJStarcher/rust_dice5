@@ -2,28 +2,21 @@ mod calchand;
 mod hand;
 mod scorecard;
 mod ui;
+use std::io::BufRead;
 
 use crate::hand::{Dice, DieFace};
 
-#[macro_use]
-extern crate text_io;
-
 fn read_line() -> String {
-    loop {
-        let line: String = if cfg!(windows) {
-            read!("{}\r\n")
-        } else if cfg!(unix) {
-            read!("{}\n")
-        } else {
-            panic!("Neither Windows nor Unix? What manner of beast art thou?");
-        };
+    for line in std::io::stdin().lock().lines() {
+        let line = line.expect("Read error");
 
         let words: Vec<_> = line.split_whitespace().collect();
 
-        if !words.is_empty() {
-            break line;
+        if words.len() > 0 {
+            return line;
         }
     }
+    panic!("Out of input");
 }
 
 fn play(slot: &str, hand: &Dice, scorecard: &mut scorecard::ScoreCardData) -> bool {
