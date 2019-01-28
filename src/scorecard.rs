@@ -119,7 +119,7 @@ impl ScoreCardData {
         point_result
     }
 
-    pub fn set_val(&mut self, short_name: &str, value: i16) -> Result<bool, SetError> {
+    pub fn set_val(&mut self, short_name: &str, value: i16) -> Result<(), SetError> {
         let line = self.line.iter_mut().find(|l| l.short_name == *short_name);
 
         match line {
@@ -127,7 +127,7 @@ impl ScoreCardData {
             Some(l) => match l.value {
                 None => {
                     l.value = Some(value);
-                    Ok(true)
+                    Ok(())
                 }
                 _ => Err(SetError::AlreadySet),
             },
