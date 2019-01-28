@@ -42,23 +42,13 @@ pub struct SubtotalData {
 
 impl fmt::Display for LineData {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // HELP: Avoid `clone`
-        let sname = self.short_name.clone();
-        let prefix = "<".to_string();
-        let suffix = ">".to_string();
+        write!(f, "{:15} ", self.long_name)?;
 
-        let val = match self.value {
-            None => [prefix, sname, suffix].join(""),
-            _ => self.value.unwrap().to_string(),
-        };
-        write!(
-            f,
-            "{:width$} {:>width2$}",
-            self.long_name,
-            val,
-            width = 15,
-            width2 = 5
-        )
+        if let Some(val) = self.value {
+            write!(f, "{:>5}", val)
+        } else {
+            write!(f, "<{}>", self.short_name)
+        }
     }
 }
 
