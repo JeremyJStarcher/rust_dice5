@@ -123,53 +123,47 @@ pub fn show_hand(hand: &Dice) {
         );
     }
 
-    const SIX: &[&str] = &[
-        "●   ●", //
-        "●   ●", //
-        "●   ●", //
-    ];
-    const FIVE: &[&str] = &[
-        "●   ●", //
-        "  ●  ",   //
-        "●   ●", //
-    ];
-    const FOUR: &[&str] = &[
-        "●   ●", //
-        "     ",     //
-        "●   ●", //
-    ];
-    const THREE: &[&str] = &[
-        "    ●", //
-        "  ●  ", //
-        "●    ", //
-    ];
-    const TWO: &[&str] = &[
-        "●    ", //
-        "     ",   //
-        "    ●", //
-    ];
-    const ONE: &[&str] = &[
-        "     ",   //
-        "  ●  ", //
-        "     ",   //
-    ];
     const LINES: usize = 3;
+    #[rustfmt::skip]
+    static DICE: [[&str; LINES]; 6] = [
+        [
+            "●   ●",
+            "●   ●",
+            "●   ●",
+        ],
+        [
+            "●   ●",
+            "  ●  ",
+            "●   ●",
+        ],
+        [
+            "●   ●",
+            "     ",
+            "●   ●",
+        ],
+        [
+            "    ●",
+            "  ●  ",
+            "●    ",
+        ],
+        [
+            "●    ",
+            "     ",
+            "    ●",
+        ],
+        [
+            "     ",
+            "  ●  ",
+            "     ",
+        ],
+    ];
 
     for l in 0..LINES {
-        for d in 0..hand.dice.len() {
-            let v = hand.dice[d];
-            let face = match v {
-                1 => ONE,
-                2 => TWO,
-                3 => THREE,
-                4 => FOUR,
-                5 => FIVE,
-                6 => SIX,
-                _ => panic!("Unknown face"),
-            };
+        for &v in &hand.dice {
+            // v as usize wil panic if v < 0 since v: i8
+            let line = DICE.get(v as usize - 1).expect("Unknown face")[l];
 
-            let s = face[l];
-            print_color(s, v);
+            print_color(line, v);
             print!("  ");
         }
         println!();
