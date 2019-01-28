@@ -104,22 +104,19 @@ impl ScoreCardData {
     pub fn play(&mut self, slot: &str, hand: &Dice) -> Result<i16, SetError> {
         use crate::calchand;
 
-        let already_has_dice5 = self.get_line_by_id(LineId::Dice5).value != None;
+        let already_has_dice5 = self.get_line_by_id(LineId::Dice5).value.is_some();
         let is_dice5 = calchand::is_dice5(hand);
         let special_handling = already_has_dice5 && is_dice5;
 
         let point_result = self.get_points(&slot, &hand, special_handling);
 
-        if point_result.is_ok() {
-            let points = point_result.unwrap();
+        if let Ok(points) = point_result {
             self.set_val(&slot, points)?;
             if special_handling {
                 self.bonus_dice5 += 1;
             }
-            Ok(points)
-        } else {
-            Err(point_result.unwrap_err())
         }
+        point_result
     }
 
     pub fn set_val(&mut self, short_name: &str, value: i16) -> Result<bool, SetError> {
