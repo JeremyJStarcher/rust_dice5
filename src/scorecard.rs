@@ -88,13 +88,7 @@ impl fmt::Display for ScoreCardData {
 
 impl ScoreCardData {
     pub fn get_line_by_id(&self, zid: LineId) -> &LineData {
-        let line = self.line.iter().find(|l| l.id == zid);
-
-        // HELP: How can I do this without the match?
-        match line {
-            None => panic!("not found"),
-            Some(x) => x,
-        }
+        self.line.iter().find(|l| l.id == zid).expect("not found")
     }
 
     pub fn get_line_by_short_name(&self, short_name: &str) -> &LineData {
