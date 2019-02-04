@@ -148,9 +148,9 @@ pub fn calc_chance(hand: &Dice, _special_dice5: bool) -> i16 {
 
 #[cfg(test)]
 mod tests {
+    use super::super::scorecard;
+    use super::super::scorecard::LineId as L;
     use super::*;
-    use crate::scorecard;
-    use crate::scorecard::LineId as L;
 
     #[test]
     fn test_ace_all_aces() {
