@@ -1,10 +1,9 @@
 use super::super::engine;
-
 use super::ui;
-use std::io::BufRead;
-
 use engine::hand::Dice;
 use engine::scorecard;
+use engine::scorecard::SetError as SErr;
+use std::io::BufRead;
 
 fn read_line() -> String {
     for line in std::io::stdin().lock().lines() {
@@ -20,8 +19,6 @@ fn read_line() -> String {
 }
 
 fn play(slot: &str, hand: &Dice, scorecard: &mut scorecard::ScoreCardData) -> bool {
-    use engine::scorecard::SetError as SErr;
-
     let point_result = scorecard.play(&slot, &hand);
     let mut ret = false;
 

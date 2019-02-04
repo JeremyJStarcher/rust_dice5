@@ -12,13 +12,12 @@
 extern crate term_painter;
 
 // use term_painter::Attr::*;
-use term_painter::Color::*;
 // use term_painter::{Color, ToStyle};
-use term_painter::ToStyle;
-
 use crate::engine::hand::{Dice, DieFace};
 use crate::engine::scorecard;
 use crate::engine::scorecard::LineId;
+use term_painter::Color::*;
+use term_painter::ToStyle;
 
 const LONG_NAME_WIDTH: usize = 15;
 const SCORE_BOX_WIDTH: usize = 5;
