@@ -1,10 +1,10 @@
-mod calchand;
-mod hand;
-mod scorecard;
+mod engine;
+
 mod ui;
 use std::io::BufRead;
 
-use crate::hand::Dice;
+use engine::scorecard;
+use engine::hand::Dice;
 
 fn read_line() -> String {
     for line in std::io::stdin().lock().lines() {

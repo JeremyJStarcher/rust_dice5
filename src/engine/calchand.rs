@@ -1,4 +1,4 @@
-use crate::hand::{Dice, DieFace};
+use super::hand::{Dice, DieFace};
 
 const VALUE_SMALL_STRAIGHT: i16 = 30;
 const VALUE_LARGE_STRAIGHT: i16 = 40;
