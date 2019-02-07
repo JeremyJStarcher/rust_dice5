@@ -9,8 +9,6 @@
  * magick must happen.
 */
 
-extern crate term_painter;
-
 // use term_painter::Attr::*;
 // use term_painter::{Color, ToStyle};
 use crate::engine::hand::{Dice, DieFace};
