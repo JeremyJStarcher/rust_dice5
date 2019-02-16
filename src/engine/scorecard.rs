@@ -1,5 +1,6 @@
 use super::calchand;
-use super::hand::Dice;
+pub use super::hand::Dice;
+pub use super::hand::DieFace;
 use std::fmt;
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]

@@ -1,7 +1,7 @@
 use super::super::engine;
 use super::ui;
-use engine::hand::Dice;
 use engine::scorecard;
+use engine::scorecard::Dice;
 use engine::scorecard::SetError as SErr;
 use std::io::BufRead;
 

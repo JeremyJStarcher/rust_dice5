@@ -11,9 +11,9 @@
 
 // use term_painter::Attr::*;
 // use term_painter::{Color, ToStyle};
-use crate::engine::hand::{Dice, DieFace};
 use crate::engine::scorecard;
 use crate::engine::scorecard::LineId;
+use crate::engine::scorecard::{Dice, DieFace};
 use term_painter::Color::*;
 use term_painter::ToStyle;
 

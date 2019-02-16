@@ -1,3 +1,3 @@
-pub mod calchand;
-pub mod hand;
+mod calchand;
+mod hand;
 pub mod scorecard;
