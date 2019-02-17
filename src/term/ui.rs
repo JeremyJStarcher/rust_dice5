@@ -11,16 +11,17 @@
 
 // use term_painter::Attr::*;
 // use term_painter::{Color, ToStyle};
-use crate::engine::scorecard;
-use crate::engine::scorecard::LineId;
-use crate::engine::scorecard::{Dice, DieFace};
+use crate::engine::LineId;
+use crate::engine::ScoreCardData;
+use crate::engine::SubtotalData;
+use crate::engine::{Dice, DieFace};
 use term_painter::Color::*;
 use term_painter::ToStyle;
 
 const LONG_NAME_WIDTH: usize = 15;
 const SCORE_BOX_WIDTH: usize = 5;
 
-pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
+pub fn print_line(score_card: &ScoreCardData, id: LineId) {
     let line = score_card.get_line_by_id(id);
     print!(
         "{:width$}  ",
@@ -43,7 +44,7 @@ pub fn print_line(score_card: &scorecard::ScoreCardData, id: LineId) {
     }
 }
 
-pub fn print_subtotal(line: &scorecard::SubtotalData, score_card: &scorecard::ScoreCardData) {
+pub fn print_subtotal(line: &SubtotalData, score_card: &ScoreCardData) {
     let val = (line.calc)(&score_card);
 
     print!(
@@ -62,7 +63,7 @@ pub fn print_subtotal(line: &scorecard::SubtotalData, score_card: &scorecard::Sc
     println!();
 }
 
-pub fn show_card(score_card: &scorecard::ScoreCardData) {
+pub fn show_card(score_card: &ScoreCardData) {
     print_line(score_card, LineId::Ace);
     println!();
     print_line(score_card, LineId::Two);

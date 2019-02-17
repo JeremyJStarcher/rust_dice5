@@ -1,8 +1,9 @@
 use super::super::engine;
 use super::ui;
-use engine::scorecard;
-use engine::scorecard::Dice;
-use engine::scorecard::SetError as SErr;
+use engine::get_new_scorecard_data;
+use engine::Dice;
+use engine::ScoreCardData;
+use engine::SetError as SErr;
 use std::io::BufRead;
 
 fn read_line() -> String {
@@ -18,7 +19,7 @@ fn read_line() -> String {
     panic!("Out of input");
 }
 
-fn play(slot: &str, hand: &Dice, scorecard: &mut scorecard::ScoreCardData) -> bool {
+fn play(slot: &str, hand: &Dice, scorecard: &mut ScoreCardData) -> bool {
     let point_result = scorecard.play(&slot, &hand);
     let mut ret = false;
 
@@ -35,7 +36,7 @@ fn play(slot: &str, hand: &Dice, scorecard: &mut scorecard::ScoreCardData) -> bo
 }
 
 pub fn main() {
-    let mut scorecard = scorecard::get_new_scorecard_data();
+    let mut scorecard = get_new_scorecard_data();
     let mut hand = Dice::first_roll();
 
     ui::show_card(&scorecard);
