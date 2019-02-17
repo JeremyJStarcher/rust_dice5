@@ -1,5 +1,7 @@
-use crate::calchand;
-use crate::hand::Dice;
+mod calchand;
+mod hand;
+
+pub use hand::{Dice, DieFace};
 use std::fmt;
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
@@ -102,8 +104,6 @@ impl ScoreCardData {
     }
 
     pub fn play(&mut self, slot: &str, hand: &Dice) -> Result<i16, SetError> {
-        use crate::calchand;
-
         let already_has_dice5 = self.get_line_by_id(LineId::Dice5).value.is_some();
         let is_dice5 = calchand::is_dice5(hand);
         let special_handling = already_has_dice5 && is_dice5;
