@@ -1,8 +1,7 @@
 mod calchand;
 mod hand;
 
-pub use hand::Dice;
-pub use hand::DieFace;
+pub use hand::{Dice, DieFace};
 use std::fmt;
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]

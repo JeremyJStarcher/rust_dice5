@@ -1,9 +1,7 @@
 use super::super::engine;
 use super::ui;
-use engine::get_new_scorecard_data;
-use engine::Dice;
-use engine::ScoreCardData;
 use engine::SetError as SErr;
+use engine::{get_new_scorecard_data, Dice, ScoreCardData};
 use std::io::BufRead;
 
 fn read_line() -> String {
