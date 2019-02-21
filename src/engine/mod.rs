@@ -7,7 +7,6 @@ use std::fmt;
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum SetError {
     AlreadySet,
-    NotFound,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
@@ -111,7 +110,7 @@ impl ScoreCardData {
         let line = self.line.iter_mut().find(|l| l.id == zid);
 
         match line {
-            None => Err(SetError::NotFound),
+            None => panic!("Set Val called with unknown id"),
             Some(l) => match l.value {
                 None => {
                     l.value = Some(value);
@@ -131,7 +130,7 @@ impl ScoreCardData {
         let line = self.line.iter_mut().find(|l| l.id == zid);
 
         match line {
-            None => Err(SetError::NotFound),
+            None => panic!("Get points called with unknown id"),
             Some(l) => match l.value {
                 None => Ok((l.calc)(&hand, dice5_bonus)),
                 _ => Err(SetError::AlreadySet),
@@ -315,9 +314,6 @@ mod tests {
 
         let result = scorecard.set_val(L::Ace, points);
         match result {
-            Err(SErr::NotFound) => {
-                panic!("Not found shouldn't happen");
-            }
             Err(SErr::AlreadySet) => {
                 panic!("Already Set shoudln't happen");
             }
@@ -337,9 +333,6 @@ mod tests {
         let result = scorecard.get_points(L::Chance, &dice, false);
 
         match result {
-            Err(SErr::NotFound) => {
-                panic!("Not found shouldn't happen");
-            }
             Err(SErr::AlreadySet) => {
                 panic!("Already Set shoudln't happen");
             }
@@ -357,16 +350,12 @@ mod tests {
 
         let result1 = scorecard.set_val(L::Ace, points1);
         match result1 {
-            Err(SErr::NotFound) => {}
             Err(SErr::AlreadySet) => {}
             Ok(_) => {}
         }
 
         let result = scorecard.set_val(L::Ace, points2);
         match result {
-            Err(SErr::NotFound) => {
-                panic!("Not found shouldn't happen");
-            }
             Err(SErr::AlreadySet) => {
                 let p = scorecard.get_line_by_id(L::Ace).value.unwrap();
                 assert_eq!(p, points1);

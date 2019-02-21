@@ -20,12 +20,17 @@ fn read_line() -> String {
 
 fn play(slot: &str, hand: &Dice, scorecard: &mut ScoreCardData) -> bool {
     let id = text::get_id_by_short_name(&slot);
+    if id.is_err() {
+        println!("I have no idea what this means: {}.", slot);
+        return false;
+    }
+
+    let id = id.unwrap();
 
     let point_result = scorecard.play(id, &hand);
     let mut ret = false;
 
     match point_result {
-        Err(SErr::NotFound) => println!("I have no idea what this means: {}.", slot),
         Err(SErr::AlreadySet) => println!("A value for {} has already been set.", slot),
         Ok(points) => {
             let long_name = text::get_long_name(id);

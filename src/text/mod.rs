@@ -36,21 +36,21 @@ pub fn get_short_name(zid: LineId) -> String {
     }
 }
 
-pub fn get_id_by_short_name(s: &str) -> LineId {
+pub fn get_id_by_short_name(s: &str) -> Result<LineId, ()> {
     match s {
-        "1" => LineId::Ace,
-        "2" => LineId::Two,
-        "3" => LineId::Three,
-        "4" => LineId::Four,
-        "5" => LineId::Five,
-        "6" => LineId::Six,
-        "3k" => LineId::ThreeKind,
-        "4k" => LineId::FourKind,
-        "ss" => LineId::SmallStraight,
-        "ls" => LineId::LargeStraight,
-        "fh" => LineId::FullHouse,
-        "c" => LineId::Chance,
-        "d" => LineId::Dice5,
-        _ => panic!("Ooops"),
+        "1" => Ok(LineId::Ace),
+        "2" => Ok(LineId::Two),
+        "3" => Ok(LineId::Three),
+        "4" => Ok(LineId::Four),
+        "5" => Ok(LineId::Five),
+        "6" => Ok(LineId::Six),
+        "3k" => Ok(LineId::ThreeKind),
+        "4k" => Ok(LineId::FourKind),
+        "ss" => Ok(LineId::SmallStraight),
+        "ls" => Ok(LineId::LargeStraight),
+        "fh" => Ok(LineId::FullHouse),
+        "c" => Ok(LineId::Chance),
+        "d" => Ok(LineId::Dice5),
+        _ => Err(()),
     }
 }
