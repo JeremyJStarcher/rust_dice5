@@ -7,11 +7,12 @@
  *
  * Short version: The Windows console isn't a VT100/ANSI console and so
  * magick must happen.
-*/
+ */
 
 // use term_painter::Attr::*;
 // use term_painter::{Color, ToStyle};
 use crate::engine::{Dice, DieFace, LineId, ScoreCardData, SubtotalData};
+use crate::text;
 use term_painter::Color::*;
 use term_painter::ToStyle;
 
@@ -22,7 +23,7 @@ pub fn print_line(score_card: &ScoreCardData, id: LineId) {
     let line = score_card.get_line_by_id(id);
     print!(
         "{:width$}  ",
-        White.bg(Black).paint(&line.long_name),
+        White.bg(Black).paint(text::get_long_name(line.id)),
         width = LONG_NAME_WIDTH,
     );
     if let Some(val) = line.value {
@@ -32,7 +33,7 @@ pub fn print_line(score_card: &ScoreCardData, id: LineId) {
             width = SCORE_BOX_WIDTH,
         );
     } else {
-        let short = format!("<{}>", &line.short_name);
+        let short = format!("<{}>", text::get_short_name(line.id));
         print!(
             "{:width$}",
             Yellow.bg(Black).bold().paint(short),
