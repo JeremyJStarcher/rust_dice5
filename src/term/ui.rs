@@ -47,7 +47,7 @@ pub fn print_subtotal(line: &SubtotalData, score_card: &ScoreCardData) {
 
     print!(
         "{:width$}",
-        White.bg(Black).paint(&line.long_name),
+        White.bg(Black).paint(text::get_long_name(line.id)),
         width = LONG_NAME_WIDTH,
     );
 

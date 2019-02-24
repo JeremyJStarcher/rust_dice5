@@ -17,6 +17,10 @@ pub enum LineId {
     Four,
     Five,
     Six,
+    UpperSubtotal,
+    UpperBonus,
+    UpperTotal,
+
     ThreeKind,
     FourKind,
     SmallStraight,
@@ -24,6 +28,9 @@ pub enum LineId {
     FullHouse,
     Chance,
     Dice5,
+    BottomSubtotal,
+    Dice5Bonus,
+    GrandTotal,
 }
 
 // #[derive(Debug)]
@@ -35,7 +42,7 @@ pub struct LineData {
 
 // #[derive(Debug)]
 pub struct SubtotalData {
-    pub long_name: String,
+    pub id: LineId,
     pub calc: fn(scorecard: &ScoreCardData) -> i16,
 }
 
@@ -267,27 +274,27 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     ScoreCardData {
         line: line_data,
         calc_upper_subtotal: SubtotalData {
-            long_name: "Subtotal".to_string(),
+            id: LineId::UpperSubtotal,
             calc: calc_upper_subtotal,
         },
         calc_upper_bonus: SubtotalData {
-            long_name: "Upper Bonus".to_string(),
+            id: LineId::UpperBonus,
             calc: calc_upper_bonus,
         },
         calc_upper_total: SubtotalData {
-            long_name: "Upper Total".to_string(),
+            id: LineId::UpperTotal,
             calc: calc_upper_total,
         },
         calc_lower_subtotal: SubtotalData {
-            long_name: "Subtotal".to_string(),
+            id: LineId::BottomSubtotal,
             calc: calc_lower_subtotal,
         },
         calc_dice5_bonus: SubtotalData {
-            long_name: "Dice5**".to_string(),
+            id: LineId::Dice5Bonus,
             calc: calc_dice5_bonus,
         },
         calc_grand_total: SubtotalData {
-            long_name: "Grand Total".to_string(),
+            id: LineId::GrandTotal,
             calc: calc_grand_total,
         },
         bonus_dice5: 0,

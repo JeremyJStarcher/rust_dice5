@@ -8,6 +8,10 @@ pub fn get_long_name(zid: LineId) -> String {
         LineId::Four => "Fours".to_string(),
         LineId::Five => "Fives".to_string(),
         LineId::Six => "Sixes".to_string(),
+        LineId::UpperSubtotal => "Subtotal".to_string(),
+        LineId::UpperBonus => ">63 bonus".to_string(),
+        LineId::UpperTotal => "Total".to_string(),
+
         LineId::ThreeKind => "3 Kind".to_string(),
         LineId::FourKind => "4 Kind".to_string(),
         LineId::SmallStraight => "Small Straight".to_string(),
@@ -15,6 +19,9 @@ pub fn get_long_name(zid: LineId) -> String {
         LineId::FullHouse => "Full House".to_string(),
         LineId::Chance => "Change".to_string(),
         LineId::Dice5 => "Dice 5".to_string(),
+        LineId::BottomSubtotal => "Subtotal".to_string(),
+        LineId::Dice5Bonus => "Dice5 Bonus".to_string(),
+        LineId::GrandTotal => "Grand Total".to_string(),
     }
 }
 
@@ -26,6 +33,7 @@ pub fn get_short_name(zid: LineId) -> String {
         LineId::Four => "4".to_string(),
         LineId::Five => "5".to_string(),
         LineId::Six => "6".to_string(),
+
         LineId::ThreeKind => "3k".to_string(),
         LineId::FourKind => "4k".to_string(),
         LineId::SmallStraight => "ss".to_string(),
@@ -33,6 +41,7 @@ pub fn get_short_name(zid: LineId) -> String {
         LineId::FullHouse => "fh".to_string(),
         LineId::Chance => "c".to_string(),
         LineId::Dice5 => "d".to_string(),
+        _ => "*ERROR".to_string(),
     }
 }
 
