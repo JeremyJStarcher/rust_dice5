@@ -42,7 +42,8 @@ pub fn print_line(score_card: &ScoreCardData, id: LineId) {
     }
 }
 
-pub fn print_subtotal(line: &SubtotalData, score_card: &ScoreCardData) {
+pub fn print_subtotal(id: LineId, score_card: &ScoreCardData) {
+    let line = score_card.get_subtotal_by_id(id);
     let val = (line.calc)(&score_card);
 
     print!(
@@ -74,9 +75,9 @@ pub fn show_card(score_card: &ScoreCardData) {
     println!();
     print_line(score_card, LineId::Six);
     println!();
-    print_subtotal(&score_card.calc_upper_subtotal, &score_card);
-    print_subtotal(&score_card.calc_upper_bonus, &score_card);
-    print_subtotal(&score_card.calc_upper_total, &score_card);
+    print_subtotal(LineId::UpperSubtotal, &score_card);
+    print_subtotal(LineId::UpperBonus, &score_card);
+    print_subtotal(LineId::UpperTotal, &score_card);
     println!("-------------------------");
 
     print_line(score_card, LineId::ThreeKind);
@@ -93,13 +94,13 @@ pub fn show_card(score_card: &ScoreCardData) {
     println!();
     print_line(score_card, LineId::Dice5);
     println!();
-    print_subtotal(&score_card.calc_lower_subtotal, &score_card);
+    print_subtotal(LineId::BottomSubtotal, &score_card);
     println!("-------------------------");
 
-    print_subtotal(&score_card.calc_dice5_bonus, &score_card);
+    print_subtotal(LineId::Dice5Bonus, &score_card);
     println!("-------------------------");
 
-    print_subtotal(&score_card.calc_grand_total, &score_card);
+    print_subtotal(LineId::GrandTotal, &score_card);
     println!("-------------------------");
 }
 
