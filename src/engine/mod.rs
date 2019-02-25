@@ -127,8 +127,13 @@ impl ScoreCardData {
 
     pub fn set_val(&mut self, zid: LineId, value: i16) -> Result<(), SetError> {
         if let Some(Data::Line(line_data)) = self.l2.get_mut(&zid) {
-            line_data.value = Some(value);
-            Ok(())
+            match line_data.value {
+                None => {
+                    line_data.value = Some(value);
+                    Ok(())
+                }
+                _ => Err(SetError::AlreadySet),
+            }
         } else {
             panic!("Not found");
         }
