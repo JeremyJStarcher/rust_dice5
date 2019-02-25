@@ -65,8 +65,8 @@ impl fmt::Display for PlayerScoreable {
 }
 
 pub struct ScoreCardData {
-    pub l2: HashMap<LineId, Data>,
-    pub bonus_dice5: i8,
+    pub line_data: HashMap<LineId, Data>,
+    bonus_dice5: i8,
 }
 
 impl fmt::Display for ScoreCardData {
@@ -94,18 +94,18 @@ impl fmt::Display for ScoreCardData {
 
 impl ScoreCardData {
     pub fn get_line_by_id(&self, zid: LineId) -> &PlayerScoreable {
-        if let Some(Data::Scoreable(line_data)) = self.l2.get(&zid) {
+        if let Some(Data::Scoreable(line_data)) = self.line_data.get(&zid) {
             &line_data
         } else {
-            panic!("Not found");
+            panic!("get_line_by_id: not found {:?}", zid);
         }
     }
 
     pub fn get_subtotal_by_id(&self, zid: LineId) -> &GameCalculates {
-        if let Some(Data::Calculated(line_data)) = self.l2.get(&zid) {
+        if let Some(Data::Calculated(line_data)) = self.line_data.get(&zid) {
             line_data
         } else {
-            panic!("Not found");
+            panic!("get_subtotal_by_id: not found {:?}", zid);
         }
     }
 
@@ -126,7 +126,7 @@ impl ScoreCardData {
     }
 
     pub fn set_val(&mut self, zid: LineId, value: i16) -> Result<(), SetError> {
-        if let Some(Data::Scoreable(line_data)) = self.l2.get_mut(&zid) {
+        if let Some(Data::Scoreable(line_data)) = self.line_data.get_mut(&zid) {
             match line_data.value {
                 None => {
                     line_data.value = Some(value);
@@ -135,7 +135,7 @@ impl ScoreCardData {
                 _ => Err(SetError::AlreadySet),
             }
         } else {
-            panic!("Not found");
+            panic!("set value Not found");
         }
     }
 
@@ -265,6 +265,30 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     );
 
     v.insert(
+        LineId::UpperSubtotal,
+        Data::Calculated(GameCalculates {
+            id: LineId::UpperSubtotal,
+            calc: calc_upper_subtotal,
+        }),
+    );
+
+    v.insert(
+        LineId::UpperBonus,
+        Data::Calculated(GameCalculates {
+            id: LineId::UpperBonus,
+            calc: calc_upper_bonus,
+        }),
+    );
+
+    v.insert(
+        LineId::UpperTotal,
+        Data::Calculated(GameCalculates {
+            id: LineId::UpperTotal,
+            calc: calc_upper_total,
+        }),
+    );
+
+    v.insert(
         LineId::ThreeKind,
         Data::Scoreable(PlayerScoreable {
             id: LineId::ThreeKind,
@@ -328,39 +352,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     );
 
     v.insert(
-        LineId::UpperSubtotal,
-        Data::Calculated(GameCalculates {
-            id: LineId::UpperSubtotal,
-            calc: calc_upper_subtotal,
-        }),
-    );
-
-    v.insert(
-        LineId::UpperSubtotal,
-        Data::Calculated(GameCalculates {
-            id: LineId::UpperSubtotal,
-            calc: calc_upper_subtotal,
-        }),
-    );
-
-    v.insert(
-        LineId::UpperSubtotal,
-        Data::Calculated(GameCalculates {
-            id: LineId::UpperBonus,
-            calc: calc_upper_bonus,
-        }),
-    );
-
-    v.insert(
-        LineId::UpperSubtotal,
-        Data::Calculated(GameCalculates {
-            id: LineId::UpperTotal,
-            calc: calc_upper_total,
-        }),
-    );
-
-    v.insert(
-        LineId::UpperSubtotal,
+        LineId::BottomSubtotal,
         Data::Calculated(GameCalculates {
             id: LineId::BottomSubtotal,
             calc: calc_lower_subtotal,
@@ -368,7 +360,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     );
 
     v.insert(
-        LineId::UpperSubtotal,
+        LineId::Dice5Bonus,
         Data::Calculated(GameCalculates {
             id: LineId::Dice5Bonus,
             calc: calc_dice5_bonus,
@@ -376,7 +368,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     );
 
     v.insert(
-        LineId::UpperSubtotal,
+        LineId::GrandTotal,
         Data::Calculated(GameCalculates {
             id: LineId::GrandTotal,
             calc: calc_grand_total,
@@ -384,7 +376,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     );
 
     ScoreCardData {
-        l2: v,
+        line_data: v,
         bonus_dice5: 0,
     }
 }
@@ -471,7 +463,7 @@ mod tests {
     #[test]
     fn game_over_game_over() {
         let mut scorecard = get_new_scorecard_data();
-        for i in 0..scorecard.l2.len() {
+        for i in 0..scorecard.line_data.len() {
             // scorecard.l2[i].value = Some(4);
         }
 
