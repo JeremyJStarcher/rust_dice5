@@ -35,24 +35,24 @@ pub enum LineId {
 }
 
 // #[derive(Debug)]
-pub struct LineData {
+pub struct PlayerScoreable {
     pub id: LineId,
     pub value: Option<i16>,
     pub calc: fn(dice: &Dice, special_dice: bool) -> i16,
 }
 
 // #[derive(Debug)]
-pub struct SubtotalData {
+pub struct GameCalculates {
     pub id: LineId,
     pub calc: fn(scorecard: &ScoreCardData) -> i16,
 }
 
 pub enum Data {
-    Line(LineData),
-    Subtotal(SubtotalData),
+    Scoreable(PlayerScoreable),
+    Calculated(GameCalculates),
 }
 
-impl fmt::Display for LineData {
+impl fmt::Display for PlayerScoreable {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?} ", self.id)?;
 
@@ -93,16 +93,16 @@ impl fmt::Display for ScoreCardData {
 }
 
 impl ScoreCardData {
-    pub fn get_line_by_id(&self, zid: LineId) -> &LineData {
-        if let Some(Data::Line(line_data)) = self.l2.get(&zid) {
+    pub fn get_line_by_id(&self, zid: LineId) -> &PlayerScoreable {
+        if let Some(Data::Scoreable(line_data)) = self.l2.get(&zid) {
             &line_data
         } else {
             panic!("Not found");
         }
     }
 
-    pub fn get_subtotal_by_id(&self, zid: LineId) -> &SubtotalData {
-        if let Some(Data::Subtotal(line_data)) = self.l2.get(&zid) {
+    pub fn get_subtotal_by_id(&self, zid: LineId) -> &GameCalculates {
+        if let Some(Data::Calculated(line_data)) = self.l2.get(&zid) {
             line_data
         } else {
             panic!("Not found");
@@ -126,7 +126,7 @@ impl ScoreCardData {
     }
 
     pub fn set_val(&mut self, zid: LineId, value: i16) -> Result<(), SetError> {
-        if let Some(Data::Line(line_data)) = self.l2.get_mut(&zid) {
+        if let Some(Data::Scoreable(line_data)) = self.l2.get_mut(&zid) {
             match line_data.value {
                 None => {
                     line_data.value = Some(value);
@@ -212,7 +212,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::Ace,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::Ace,
             value: None,
             calc: calchand::calc_ace,
@@ -221,7 +221,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::Two,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::Two,
             value: None,
             calc: calchand::calc_two,
@@ -230,7 +230,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::Three,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::Three,
             value: None,
             calc: calchand::calc_three,
@@ -239,7 +239,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::Four,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::Four,
             value: None,
             calc: calchand::calc_four,
@@ -248,7 +248,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::Five,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::Five,
             value: None,
             calc: calchand::calc_five,
@@ -257,7 +257,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::Six,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::Six,
             value: None,
             calc: calchand::calc_six,
@@ -266,7 +266,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::ThreeKind,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::ThreeKind,
             value: None,
             calc: calchand::calc_3k,
@@ -275,7 +275,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::FourKind,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::FourKind,
             value: None,
             calc: calchand::calc_4k,
@@ -284,7 +284,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::SmallStraight,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::SmallStraight,
             value: None,
             calc: calchand::calc_ss,
@@ -293,7 +293,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::LargeStraight,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::LargeStraight,
             value: None,
             calc: calchand::calc_ls,
@@ -302,7 +302,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::FullHouse,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::FullHouse,
             value: None,
             calc: calchand::calc_fh,
@@ -311,7 +311,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::Chance,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::Chance,
             value: None,
             calc: calchand::calc_chance,
@@ -320,7 +320,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::Dice5,
-        Data::Line(LineData {
+        Data::Scoreable(PlayerScoreable {
             id: LineId::Dice5,
             value: None,
             calc: calchand::calc_dice5,
@@ -329,7 +329,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::UpperSubtotal,
-        Data::Subtotal(SubtotalData {
+        Data::Calculated(GameCalculates {
             id: LineId::UpperSubtotal,
             calc: calc_upper_subtotal,
         }),
@@ -337,7 +337,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::UpperSubtotal,
-        Data::Subtotal(SubtotalData {
+        Data::Calculated(GameCalculates {
             id: LineId::UpperSubtotal,
             calc: calc_upper_subtotal,
         }),
@@ -345,7 +345,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::UpperSubtotal,
-        Data::Subtotal(SubtotalData {
+        Data::Calculated(GameCalculates {
             id: LineId::UpperBonus,
             calc: calc_upper_bonus,
         }),
@@ -353,7 +353,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::UpperSubtotal,
-        Data::Subtotal(SubtotalData {
+        Data::Calculated(GameCalculates {
             id: LineId::UpperTotal,
             calc: calc_upper_total,
         }),
@@ -361,7 +361,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::UpperSubtotal,
-        Data::Subtotal(SubtotalData {
+        Data::Calculated(GameCalculates {
             id: LineId::BottomSubtotal,
             calc: calc_lower_subtotal,
         }),
@@ -369,7 +369,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::UpperSubtotal,
-        Data::Subtotal(SubtotalData {
+        Data::Calculated(GameCalculates {
             id: LineId::Dice5Bonus,
             calc: calc_dice5_bonus,
         }),
@@ -377,7 +377,7 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
 
     v.insert(
         LineId::UpperSubtotal,
-        Data::Subtotal(SubtotalData {
+        Data::Calculated(GameCalculates {
             id: LineId::GrandTotal,
             calc: calc_grand_total,
         }),
@@ -468,13 +468,13 @@ mod tests {
         assert_eq!(false, scorecard.game_over());
     }
 
-    //    #[test]
-    //    fn game_over_game_over() {
-    //        let mut scorecard = get_new_scorecard_data();
-    //        for i in 0..scorecard.line.len() {
-    //            scorecard.line[i].value = Some(4);
-    //        }
+    #[test]
+    fn game_over_game_over() {
+        let mut scorecard = get_new_scorecard_data();
+        for i in 0..scorecard.l2.len() {
+            // scorecard.l2[i].value = Some(4);
+        }
 
-    //        assert_eq!(true, scorecard.game_over());
-    //    }
+        assert_eq!(true, scorecard.game_over());
+    }
 }
