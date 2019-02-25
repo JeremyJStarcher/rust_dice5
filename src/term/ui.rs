@@ -11,7 +11,7 @@
 
 // use term_painter::Attr::*;
 // use term_painter::{Color, ToStyle};
-use crate::engine::{Dice, DieFace, LineId, ScoreCardData, SubtotalData};
+use crate::engine::{Dice, DieFace, LineId, ScoreCardData};
 use crate::text;
 use term_painter::Color::*;
 use term_painter::ToStyle;
