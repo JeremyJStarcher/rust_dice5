@@ -149,9 +149,22 @@ impl ScoreCardData {
         Ok((line.calc)(&hand, dice5_bonus))
     }
 
-    pub fn game_over(&mut self) -> bool {
-        false
-        // self.line.iter().all(|l| l.value.is_some())
+    pub fn count_empty_slots(&self) -> i8 {
+        let mut count = 0;
+
+        self.line_data.iter().for_each(|(_line_id, data)| {
+            if let Data::Scoreable(c) = data {
+                match c.value {
+                    Some(_) => count += 1,
+                    None => (),
+                }
+            }
+        });
+        count
+    }
+
+    pub fn game_over(&self) -> bool {
+        self.count_empty_slots() == 13
     }
 }
 
@@ -455,17 +468,33 @@ mod tests {
 
     #[test]
     fn game_over_new_game() {
-        let mut scorecard = get_new_scorecard_data();
+        let scorecard = get_new_scorecard_data();
 
+        assert_eq!(false, scorecard.game_over());
+    }
+
+    #[test]
+    fn game_over_game_just_started() {
+        let scorecard = get_new_scorecard_data();
         assert_eq!(false, scorecard.game_over());
     }
 
     #[test]
     fn game_over_game_over() {
         let mut scorecard = get_new_scorecard_data();
-        for i in 0..scorecard.line_data.len() {
-            // scorecard.l2[i].value = Some(4);
-        }
+        let scorecard2 = get_new_scorecard_data();
+
+        let mut line_ids = Vec::new();
+
+        scorecard2.line_data.iter().for_each(|(line_id, data)| {
+            if let Data::Scoreable(_) = data {
+                line_ids.push(line_id);
+            }
+        });
+
+        line_ids.iter().for_each(|&line_id| {
+            let _ = scorecard.set_val(*line_id, 1);
+        });
 
         assert_eq!(true, scorecard.game_over());
     }
