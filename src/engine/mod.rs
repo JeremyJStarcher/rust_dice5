@@ -481,7 +481,6 @@ mod tests {
 
     #[test]
     fn game_over_game_over() {
-        let mut scorecard = get_new_scorecard_data();
         let scorecard2 = get_new_scorecard_data();
 
         let mut line_ids = Vec::new();
@@ -492,6 +491,7 @@ mod tests {
             }
         });
 
+        let mut scorecard = get_new_scorecard_data();
         line_ids.iter().for_each(|&line_id| {
             let _ = scorecard.set_val(*line_id, 1);
         });
