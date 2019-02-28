@@ -20,7 +20,7 @@ const LONG_NAME_WIDTH: usize = 15;
 const SCORE_BOX_WIDTH: usize = 5;
 
 pub fn print_line(score_card: &ScoreCardData, id: LineId) {
-    let line = score_card.get_line_by_id(id);
+    let line = score_card.get_scoreable_by_id(id);
     print!(
         "{:width$}  ",
         White.bg(Black).paint(text::get_long_name(line.id)),

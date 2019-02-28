@@ -72,20 +72,20 @@ pub struct ScoreCardData {
 impl fmt::Display for ScoreCardData {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let out: Vec<_> = vec![
-            format!("{}", self.get_line_by_id(LineId::Ace)),
-            format!("{}", self.get_line_by_id(LineId::Two)),
-            format!("{}", self.get_line_by_id(LineId::Three)),
-            format!("{}", self.get_line_by_id(LineId::Four)),
-            format!("{}", self.get_line_by_id(LineId::Five)),
-            format!("{}", self.get_line_by_id(LineId::Six)),
+            format!("{}", self.get_scoreable_by_id(LineId::Ace)),
+            format!("{}", self.get_scoreable_by_id(LineId::Two)),
+            format!("{}", self.get_scoreable_by_id(LineId::Three)),
+            format!("{}", self.get_scoreable_by_id(LineId::Four)),
+            format!("{}", self.get_scoreable_by_id(LineId::Five)),
+            format!("{}", self.get_scoreable_by_id(LineId::Six)),
             "-------------------------".to_string(),
-            format!("{}", self.get_line_by_id(LineId::ThreeKind)),
-            format!("{}", self.get_line_by_id(LineId::FourKind)),
-            format!("{}", self.get_line_by_id(LineId::SmallStraight)),
-            format!("{}", self.get_line_by_id(LineId::LargeStraight)),
-            format!("{}", self.get_line_by_id(LineId::FullHouse)),
-            format!("{}", self.get_line_by_id(LineId::Chance)),
-            format!("{}", self.get_line_by_id(LineId::Dice5)),
+            format!("{}", self.get_scoreable_by_id(LineId::ThreeKind)),
+            format!("{}", self.get_scoreable_by_id(LineId::FourKind)),
+            format!("{}", self.get_scoreable_by_id(LineId::SmallStraight)),
+            format!("{}", self.get_scoreable_by_id(LineId::LargeStraight)),
+            format!("{}", self.get_scoreable_by_id(LineId::FullHouse)),
+            format!("{}", self.get_scoreable_by_id(LineId::Chance)),
+            format!("{}", self.get_scoreable_by_id(LineId::Dice5)),
         ];
 
         write!(f, "{}", out.join("\n"))
@@ -93,7 +93,7 @@ impl fmt::Display for ScoreCardData {
 }
 
 impl ScoreCardData {
-    pub fn get_line_by_id(&self, zid: LineId) -> &PlayerScoreable {
+    pub fn get_scoreable_by_id(&self, zid: LineId) -> &PlayerScoreable {
         if let Some(Data::Scoreable(line_data)) = self.line_data.get(&zid) {
             &line_data
         } else {
@@ -110,7 +110,7 @@ impl ScoreCardData {
     }
 
     pub fn play(&mut self, zid: LineId, hand: &Dice) -> Result<i16, SetError> {
-        let already_has_dice5 = self.get_line_by_id(LineId::Dice5).value.is_some();
+        let already_has_dice5 = self.get_scoreable_by_id(LineId::Dice5).value.is_some();
         let is_dice5 = calchand::is_dice5(hand);
         let special_handling = already_has_dice5 && is_dice5;
 
@@ -145,7 +145,7 @@ impl ScoreCardData {
         hand: &Dice,
         dice5_bonus: bool,
     ) -> Result<i16, SetError> {
-        let line = self.get_line_by_id(zid);
+        let line = self.get_scoreable_by_id(zid);
         Ok((line.calc)(&hand, dice5_bonus))
     }
 
@@ -170,7 +170,7 @@ impl ScoreCardData {
 
 fn calc_subtotal(scorecard: &ScoreCardData, a: Vec<LineId>) -> i16 {
     a.iter()
-        .flat_map(|&line_id| scorecard.get_line_by_id(line_id).value)
+        .flat_map(|&line_id| scorecard.get_scoreable_by_id(line_id).value)
         .sum()
 }
 
@@ -403,7 +403,7 @@ mod tests {
     #[test]
     fn get_new_scorecard_returns_card() {
         let scorecard = get_new_scorecard_data();
-        let score = scorecard.get_line_by_id(L::Ace).value;
+        let score = scorecard.get_scoreable_by_id(L::Ace).value;
         assert_eq!(score, None);
     }
 
@@ -418,7 +418,7 @@ mod tests {
                 panic!("Already Set shoudln't happen");
             }
             Ok(_) => {
-                let p = scorecard.get_line_by_id(L::Ace).value.unwrap();
+                let p = scorecard.get_scoreable_by_id(L::Ace).value.unwrap();
                 assert_eq!(p, points);
                 assert!(true);
             }
@@ -457,7 +457,7 @@ mod tests {
         let result = scorecard.set_val(L::Ace, points2);
         match result {
             Err(SErr::AlreadySet) => {
-                let p = scorecard.get_line_by_id(L::Ace).value.unwrap();
+                let p = scorecard.get_scoreable_by_id(L::Ace).value.unwrap();
                 assert_eq!(p, points1);
             }
             Ok(_) => {
