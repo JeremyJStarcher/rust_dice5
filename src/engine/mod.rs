@@ -36,14 +36,12 @@ pub enum LineId {
 
 // #[derive(Debug)]
 pub struct PlayerScoreable {
-    pub id: LineId,
     pub value: Option<i16>,
     pub calc: fn(dice: &Dice, special_dice: bool) -> i16,
 }
 
 // #[derive(Debug)]
 pub struct GameCalculates {
-    pub id: LineId,
     pub calc: fn(scorecard: &ScoreCardData) -> i16,
 }
 
@@ -54,8 +52,6 @@ pub enum Data {
 
 impl fmt::Display for PlayerScoreable {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?} ", self.id)?;
-
         if let Some(val) = self.value {
             write!(f, "{:>5}", val)
         } else {
@@ -226,7 +222,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::Ace,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::Ace,
             value: None,
             calc: calchand::calc_ace,
         }),
@@ -235,7 +230,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::Two,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::Two,
             value: None,
             calc: calchand::calc_two,
         }),
@@ -244,7 +238,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::Three,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::Three,
             value: None,
             calc: calchand::calc_three,
         }),
@@ -253,7 +246,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::Four,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::Four,
             value: None,
             calc: calchand::calc_four,
         }),
@@ -262,7 +254,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::Five,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::Five,
             value: None,
             calc: calchand::calc_five,
         }),
@@ -271,7 +262,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::Six,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::Six,
             value: None,
             calc: calchand::calc_six,
         }),
@@ -280,7 +270,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::UpperSubtotal,
         Data::Calculated(GameCalculates {
-            id: LineId::UpperSubtotal,
             calc: calc_upper_subtotal,
         }),
     );
@@ -288,7 +277,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::UpperBonus,
         Data::Calculated(GameCalculates {
-            id: LineId::UpperBonus,
             calc: calc_upper_bonus,
         }),
     );
@@ -296,7 +284,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::UpperTotal,
         Data::Calculated(GameCalculates {
-            id: LineId::UpperTotal,
             calc: calc_upper_total,
         }),
     );
@@ -304,7 +291,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::ThreeKind,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::ThreeKind,
             value: None,
             calc: calchand::calc_3k,
         }),
@@ -313,7 +299,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::FourKind,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::FourKind,
             value: None,
             calc: calchand::calc_4k,
         }),
@@ -322,7 +307,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::SmallStraight,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::SmallStraight,
             value: None,
             calc: calchand::calc_ss,
         }),
@@ -331,7 +315,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::LargeStraight,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::LargeStraight,
             value: None,
             calc: calchand::calc_ls,
         }),
@@ -340,7 +323,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::FullHouse,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::FullHouse,
             value: None,
             calc: calchand::calc_fh,
         }),
@@ -349,7 +331,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::Chance,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::Chance,
             value: None,
             calc: calchand::calc_chance,
         }),
@@ -358,7 +339,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::Dice5,
         Data::Scoreable(PlayerScoreable {
-            id: LineId::Dice5,
             value: None,
             calc: calchand::calc_dice5,
         }),
@@ -367,7 +347,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::BottomSubtotal,
         Data::Calculated(GameCalculates {
-            id: LineId::BottomSubtotal,
             calc: calc_lower_subtotal,
         }),
     );
@@ -375,7 +354,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::Dice5Bonus,
         Data::Calculated(GameCalculates {
-            id: LineId::Dice5Bonus,
             calc: calc_dice5_bonus,
         }),
     );
@@ -383,7 +361,6 @@ pub fn get_new_scorecard_data() -> ScoreCardData {
     v.insert(
         LineId::GrandTotal,
         Data::Calculated(GameCalculates {
-            id: LineId::GrandTotal,
             calc: calc_grand_total,
         }),
     );

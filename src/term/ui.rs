@@ -23,7 +23,7 @@ pub fn print_line(score_card: &ScoreCardData, id: LineId) {
     let line = score_card.get_scoreable_by_id(id);
     print!(
         "{:width$}  ",
-        White.bg(Black).paint(text::get_long_name(line.id)),
+        White.bg(Black).paint(text::get_long_name(id)),
         width = LONG_NAME_WIDTH,
     );
     if let Some(val) = line.value {
@@ -33,7 +33,7 @@ pub fn print_line(score_card: &ScoreCardData, id: LineId) {
             width = SCORE_BOX_WIDTH,
         );
     } else {
-        let short = format!("<{}>", text::get_short_name(line.id));
+        let short = format!("<{}>", text::get_short_name(id));
         print!(
             "{:width$}",
             Yellow.bg(Black).bold().paint(short),
@@ -48,7 +48,7 @@ pub fn print_subtotal(id: LineId, score_card: &ScoreCardData) {
 
     print!(
         "{:width$}",
-        White.bg(Black).paint(text::get_long_name(line.id)),
+        White.bg(Black).paint(text::get_long_name(id)),
         width = LONG_NAME_WIDTH,
     );
 
