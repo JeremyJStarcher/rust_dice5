@@ -150,9 +150,8 @@ impl ScoreCardData {
 
         self.line_data.iter().for_each(|(_line_id, data)| {
             if let Data::Scoreable(c) = data {
-                match c.value {
-                    Some(_) => count += 1,
-                    None => (),
+                if c.value.is_some() {
+                    count += 1
                 }
             }
         });
