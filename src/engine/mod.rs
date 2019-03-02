@@ -8,6 +8,7 @@ use std::fmt;
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum SetError {
     AlreadySet,
+    DataNotFound,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Hash)]
@@ -131,7 +132,7 @@ impl ScoreCardData {
                 _ => Err(SetError::AlreadySet),
             }
         } else {
-            panic!("set value Not found");
+            Err(SetError::DataNotFound)
         }
     }
 
@@ -390,13 +391,13 @@ mod tests {
 
         let result = scorecard.set_val(L::Ace, points);
         match result {
-            Err(SErr::AlreadySet) => {
-                panic!("Already Set shoudln't happen");
-            }
             Ok(_) => {
                 let p = scorecard.get_scoreable_by_id(L::Ace).value.unwrap();
                 assert_eq!(p, points);
                 assert!(true);
+            }
+            Err(error) => {
+                panic!("Already Set encountered an error {:?}", error);
             }
         }
     }
@@ -409,11 +410,11 @@ mod tests {
         let result = scorecard.get_points(L::Chance, &dice, false);
 
         match result {
-            Err(SErr::AlreadySet) => {
-                panic!("Already Set shoudln't happen");
-            }
             Ok(points) => {
                 assert_ne!(points, 0);
+            }
+            Err(error) => {
+                panic!("Already Set shoudln't error {:?}", error);
             }
         }
     }
@@ -426,7 +427,7 @@ mod tests {
 
         let result1 = scorecard.set_val(L::Ace, points1);
         match result1 {
-            Err(SErr::AlreadySet) => {}
+            Err(_) => {}
             Ok(_) => {}
         }
 
@@ -438,6 +439,9 @@ mod tests {
             }
             Ok(_) => {
                 panic!("OK shouldn't happen");
+            }
+            Err(error) => {
+                panic!("Error shouldn't happen {:?}", error);
             }
         }
     }

@@ -32,6 +32,7 @@ fn play(slot: &str, hand: &Dice, scorecard: &mut ScoreCardData) -> bool {
 
     match point_result {
         Err(SErr::AlreadySet) => println!("A value for {} has already been set.", slot),
+        Err(SErr::DataNotFound) => println!("A value for {} was not found.", slot),
         Ok(points) => {
             let long_name = text::get_long_name(id);
             println!("Played {} points on {}", points, long_name);
