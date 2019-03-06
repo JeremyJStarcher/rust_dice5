@@ -233,7 +233,7 @@ mod tests {
     }
 
     #[test]
-    fn test_fives_all_aces() {
+    fn test_fives_all_fives() {
         let test_dice: Vec<DieFace> = vec![5, 5, 5, 5, 5];
         let hand = Dice::roll_fake(test_dice);
 
