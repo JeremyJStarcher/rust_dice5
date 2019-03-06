@@ -269,7 +269,7 @@ mod tests {
 
         let scorecard = get_new_scorecard_data();
         let score = (scorecard.get_scoreable_by_id(L::ThreeKind).calc)(&hand, false);
-        assert_eq!(score, 5);
+        assert_eq!(score, 1 * 5);
     }
 
     #[test]
